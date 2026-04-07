@@ -1,0 +1,16 @@
+### Creazione di una nuova risorsa
+POST http://localhost:8080/api/v1/resources
+Content-Type: application/json
+
+{
+  "nome": "Spring Boot",
+  "descrizione": "Framework per lo sviluppo di microservizi Java",
+  "url": "https://spring.io/projects/spring-boot",
+  "categoria": "Framework"
+}
+
+### Recupero di tutte le risorse
+GET http://localhost:8080/api/v1/resources
+
+### Recupero di una risorsa specifica per ID (Assicurati che l'ID esista)
+GET http://localhost:8080/api/v1/resources/1
