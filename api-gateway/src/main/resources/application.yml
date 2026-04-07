@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: resource-catalog-service
+          uri: http://resource-catalog-service:8080
+          predicates:
+            - Path=/api/v1/resources/**, /api/v1/categories/**
