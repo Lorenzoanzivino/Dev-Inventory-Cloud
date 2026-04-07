@@ -2,8 +2,10 @@ package com.catalog.resource_catalog_service.service;
 
 import com.catalog.resource_catalog_service.dto.ResourceRequest;
 import com.catalog.resource_catalog_service.dto.ResourceResponse;
+import com.catalog.resource_catalog_service.entity.Category;
 import com.catalog.resource_catalog_service.entity.Resource;
 import com.catalog.resource_catalog_service.mapper.ResourceMapper;
+import com.catalog.resource_catalog_service.repository.CategoryRepository;
 import com.catalog.resource_catalog_service.repository.ResourceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +19,23 @@ import java.util.stream.Collectors;
 public class ResourceServiceImpl implements ResourceService {
 
     private final ResourceRepository resourceRepository;
+    private final CategoryRepository categoryRepository; // Iniettato per gestire la relazione
     private final ResourceMapper resourceMapper;
 
     @Override
     @Transactional
     public ResourceResponse createResource(ResourceRequest request) {
+        // 1. Cerchiamo la categoria a DB
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new RuntimeException("Categoria non trovata con ID: " + request.categoryId()));
+
+        // 2. Mappiamo il DTO in Entity
         Resource entity = resourceMapper.toEntity(request);
+
+        // 3. Colleghiamo la categoria trovata alla risorsa
+        entity.setCategory(category);
+
+        // 4. Salviamo
         Resource savedEntity = resourceRepository.save(entity);
         return resourceMapper.toResponse(savedEntity);
     }
@@ -38,8 +51,8 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(readOnly = true)
     public ResourceResponse getResourceById(Long id) {
-        Resource entity = resourceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Risorsa non trovata con ID: " + id));
-        return resourceMapper.toResponse(entity);
+        return resourceRepository.findById(id)
+                .map(resourceMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Risorsa non trovata"));
     }
 }

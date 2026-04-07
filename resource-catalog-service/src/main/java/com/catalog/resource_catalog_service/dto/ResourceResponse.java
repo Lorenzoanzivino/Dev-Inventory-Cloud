@@ -7,6 +7,6 @@ public record ResourceResponse(
         String nome,
         String descrizione,
         String url,
-        String categoria,
+        CategoryResponse category, // Restituiamo i dettagli della categoria
         LocalDateTime dataInserimento
 ) {}

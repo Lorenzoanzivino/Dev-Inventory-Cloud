@@ -1,0 +1,24 @@
+### 1. Creazione di una Categoria (Necessaria per le risorse)
+POST http://localhost:8080/api/v1/categories
+Content-Type: application/json
+
+{
+  "nome": "Frameworks"
+}
+
+### 2. Recupero Categorie (Per verificare l'ID generato, es: 1)
+GET http://localhost:8080/api/v1/categories
+
+### 3. Creazione di una Risorsa legata alla Categoria 1
+POST http://localhost:8080/api/v1/resources
+Content-Type: application/json
+
+{
+  "nome": "Spring Boot",
+  "descrizione": "Evoluzione di Spring per microservizi",
+  "url": "https://spring.io/projects/spring-boot",
+  "categoryId": 1
+}
+
+### 4. Recupero di tutte le risorse (Dovresti vedere la categoria annidata)
+GET http://localhost:8080/api/v1/resources

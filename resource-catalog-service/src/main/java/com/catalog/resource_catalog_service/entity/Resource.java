@@ -24,9 +24,9 @@ public class Resource {
 
     private String url;
 
-    // Per ora lo lasciamo String per completare il primo flusso verticale.
-    // Lo trasformeremo in @ManyToOne quando creeremo l'entità Category.
-    private String categoria;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "data_inserimento", updatable = false)
     private LocalDateTime dataInserimento;

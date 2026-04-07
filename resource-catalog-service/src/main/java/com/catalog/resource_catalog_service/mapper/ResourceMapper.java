@@ -7,14 +7,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = {CategoryMapper.class})
 public interface ResourceMapper {
 
-    // Da Request DTO a Entity (per il salvataggio)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "category", ignore = true) // La categoria verrà settata manualmente nel Service dopo la ricerca a DB
     @Mapping(target = "dataInserimento", ignore = true)
     Resource toEntity(ResourceRequest request);
 
-    // Da Entity a Response DTO (per la visualizzazione)
     ResourceResponse toResponse(Resource entity);
 }
