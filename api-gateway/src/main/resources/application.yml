@@ -6,6 +6,20 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
       routes:
         # --- RESOURCE SERVICE ---
         - id: resource-catalog-api
@@ -26,7 +40,7 @@ spring:
         - id: developer-collection-api
           uri: ${DEVELOPER_COLLECTION_SERVICE_URL}
           predicates:
-            - Path=/api/v1/developers/**
+            - Path=/api/v1/developers/**, /api/v1/collections/**
           filters:
             - AuthenticationFilter
 

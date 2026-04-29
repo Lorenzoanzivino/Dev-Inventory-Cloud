@@ -4,6 +4,7 @@ import com.catalog.apigateway.util.JwtUtil;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
+            // Salta il controllo auth per le richieste pre-flight CORS (OPTIONS)
+            if (exchange.getRequest().getMethod().equals(HttpMethod.OPTIONS)) {
+                return chain.filter(exchange);
+            }
+
             // 1. Controlla se l'header esiste
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
