@@ -1,0 +1,53 @@
+POST http://localhost/api/v1/developers
+Content-Type: application/json
+
+{
+  "nome": "Test Volume",
+  "email": "volume@test.com"
+}
+
+###
+
+GET http://localhost/api/v1/developers
+
+###
+
+POST http://localhost/api/v1/categories
+Content-Type: application/json
+
+{ "nome": "Cloud Tools" }
+
+###
+POST http://localhost/api/v1/resources
+Content-Type: application/json
+
+{
+  "nome": "Terraform",
+  "url": "https://terraform.io",
+  "categoryId": 1
+}
+
+###
+
+POST http://localhost/api/v1/developers/collection
+Content-Type: application/json
+
+{ "developerId": 1, "resourceId": 1 }
+
+###
+
+DELETE http://localhost/api/v1/developers/1/collection/1
+
+###
+
+GET http://localhost/api/v1/developers/1/collection
+
+###
+
+POST http://localhost/api/v1/developers/collection
+Content-Type: application/json
+
+{
+  "developerId": 1,
+  "resourceId": 999
+}

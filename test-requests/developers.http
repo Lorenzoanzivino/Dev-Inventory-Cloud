@@ -1,0 +1,21 @@
+### 1. Creazione del primo Developer (Lorenzo)
+POST http://localhost/api/v1/developers
+Content-Type: application/json
+
+{
+  "nome": "Lorenzo",
+  "email": "lorenzo@example.com"
+}
+
+### 2. Recupero di tutti i Developer
+GET http://localhost/api/v1/developers
+
+### 3. Test dell'Exception Handler (Email Duplicata)
+# Dovrebbe restituire 400 Bad Request con il messaggio personalizzato
+POST http://localhost/api/v1/developers
+Content-Type: application/json
+
+{
+  "nome": "Clone",
+  "email": "lorenzo@example.com"
+}

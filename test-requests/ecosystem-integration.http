@@ -1,0 +1,60 @@
+### 1. [CATALOG] Crea una Categoria
+POST http://localhost/api/v1/categories
+Content-Type: application/json
+
+{
+  "nome": "Frontend Frameworks"
+}
+
+### 2. [CATALOG] Crea una Risorsa (ID 1)
+# Assicurati che l'ID della categoria sia corretto (probabilmente 1 se il DB è pulito)
+POST http://localhost/api/v1/resources
+Content-Type: application/json
+
+{
+  "nome": "React",
+  "descrizione": "Libreria JS per interfacce",
+  "url": "https://react.dev",
+  "categoryId": 1
+}
+
+### 3. [DEVELOPER] Crea un Developer (ID 1)
+POST http://localhost/api/v1/developers
+Content-Type: application/json
+
+{
+  "nome": "Lorenzo",
+  "email": "lorenzo.dev@example.com"
+}
+
+### 4. [INTEGRATION] Aggiungi la risorsa alla collezione (Feign Test)
+# Questo test verifica se il developer-service riesce a chiamare il resource-service
+POST http://localhost/api/v1/developers/collection
+Content-Type: application/json
+
+{
+  "developerId": 1,
+  "resourceId": 1
+}
+
+### 5. [ERROR TEST] Aggiunta risorsa inesistente
+# Deve restituire 400 Bad Request perché Feign non troverà la risorsa 999
+POST http://localhost/api/v1/developers/collection
+Content-Type: application/json
+
+{
+  "developerId": 1,
+  "resourceId": 999
+}
+
+### 6. [INTEGRATION] Recupero Collezione Completa (Aggregata)
+GET http://localhost/api/v1/developers/1/collection
+
+### Test: Aggiunta risorsa alla collezione
+POST http://localhost/api/v1/developers/collection
+Content-Type: application/json
+
+{
+  "developerId": 1,
+  "resourceId": 1
+}

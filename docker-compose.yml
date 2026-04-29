@@ -1,0 +1,116 @@
+services:
+  catalog-db:
+    image: postgres:17-alpine
+    container_name: catalog-db
+    environment:
+      POSTGRES_DB: resource_catalog_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d resource_catalog_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - catalog-data:/var/lib/postgresql/data
+
+  developer-db:
+    image: postgres:17-alpine
+    container_name: developer-db
+    environment:
+      POSTGRES_DB: developer_collection_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5436:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d developer_collection_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - developer-data:/var/lib/postgresql/data
+
+  auth-db:
+    image: postgres:17-alpine
+    container_name: auth-db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5437:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+
+  resource-service:
+    build: ./resource-catalog-service
+    container_name: resource-catalog-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://catalog-db:5432/resource_catalog_db
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      - SPRING_JPA_SHOW_SQL=${SPRING_JPA_SHOW_SQL}
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+
+  developer-service:
+    build: ./developer-collection-service
+    container_name: developer-collection-service
+    environment:
+      - DEVELOPER_DATASOURCE_URL=jdbc:postgresql://developer-db:5432/developer_collection_db
+      - DEVELOPER_DATASOURCE_USERNAME=${DB_USERNAME}
+      - DEVELOPER_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      - SPRING_JPA_SHOW_SQL=${SPRING_JPA_SHOW_SQL}
+      - RESOURCE_CATALOG_SERVICE_URL=${RESOURCE_CATALOG_SERVICE_URL}
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
+    depends_on:
+      developer-db:
+        condition: service_healthy
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    environment:
+      - AUTH_DATASOURCE_URL=jdbc:postgresql://auth-db:5432/auth_db
+      - AUTH_DATASOURCE_USERNAME=${DB_USERNAME}
+      - AUTH_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
+      - SPRING_JPA_SHOW_SQL=${SPRING_JPA_SHOW_SQL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - API_GATEWAY_URL=${API_GATEWAY_URL}
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "80:8080"
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - RESOURCE_CATALOG_SERVICE_URL=${RESOURCE_CATALOG_SERVICE_URL}
+      - DEVELOPER_COLLECTION_SERVICE_URL=${DEVELOPER_COLLECTION_SERVICE_URL}
+      - AUTH_SERVICE_URL=${AUTH_SERVICE_URL}
+    depends_on:
+      - resource-service
+      - developer-service
+      - auth-service
+
+volumes:
+  catalog-data:
+  developer-data:
+  auth-data:

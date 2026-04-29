@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: developer-collection-service
+  datasource:
+    url: ${DEVELOPER_DATASOURCE_URL}
+    username: ${DEVELOPER_DATASOURCE_USERNAME}
+    password: ${DEVELOPER_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    show-sql: ${SPRING_JPA_SHOW_SQL}
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Variabile personalizzata per il client Feign
+services:
+  resource-catalog:
+    url: ${RESOURCE_CATALOG_SERVICE_URL}
+
+springdoc:
+  openapi:
+    servers:
+      - url: ${API_GATEWAY_URL}
+        description: "API Gateway"

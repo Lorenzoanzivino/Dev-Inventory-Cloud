@@ -1,0 +1,60 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # --- RESOURCE SERVICE ---
+        - id: resource-catalog-api
+          uri: ${RESOURCE_CATALOG_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/resources/**, /api/v1/categories/**
+          filters:
+            - AuthenticationFilter
+
+        - id: resource-catalog-docs
+          uri: ${RESOURCE_CATALOG_SERVICE_URL}
+          predicates:
+            - Path=/v3/api-docs/resources/**
+          filters:
+            - RewritePath=/v3/api-docs/resources(?<segment>.*), /v3/api-docs$\{segment}
+
+        # --- DEVELOPER SERVICE ---
+        - id: developer-collection-api
+          uri: ${DEVELOPER_COLLECTION_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/developers/**
+          filters:
+            - AuthenticationFilter
+
+        - id: developer-collection-docs
+          uri: ${DEVELOPER_COLLECTION_SERVICE_URL}
+          predicates:
+            - Path=/v3/api-docs/developers/**
+          filters:
+            - RewritePath=/v3/api-docs/developers(?<segment>.*), /v3/api-docs$\{segment}
+
+        # --- AUTH SERVICE ---
+        - id: auth-service
+          uri: ${AUTH_SERVICE_URL}
+          predicates:
+            - Path=/api/v1/auth/**, /v3/api-docs/auth/**
+          filters:
+            - RewritePath=/v3/api-docs/auth(?<segment>.*), /v3/api-docs$\{segment}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+    urls:
+      - name: 1. Resource Catalog
+        url: /v3/api-docs/resources
+      - name: 2. Developer Collection
+        url: /v3/api-docs/developers
+      - name: 3. Auth Service
+        url: /v3/api-docs/auth
+
+jwt:
+  secret: ${JWT_SECRET}
