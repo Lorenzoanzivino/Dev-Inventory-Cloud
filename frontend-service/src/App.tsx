@@ -30,6 +30,14 @@ import { CategoryList } from "./pages/categories/list";
 import { CategoryCreate } from "./pages/categories/create";
 import { CategoryEdit } from "./pages/categories/edit";
 
+import { DeveloperList } from "./pages/developers/list";
+import { DeveloperCreate } from "./pages/developers/create";
+import { DeveloperEdit } from "./pages/developers/edit";
+
+import { CollectionList } from "./pages/collections/list";
+import { CollectionCreate } from "./pages/collections/create";
+import { CollectionEdit } from "./pages/collections/edit";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 // Estensione del dataProvider per mappare le chiamate PATCH verso PUT
@@ -71,8 +79,17 @@ const App = () => {
                                 meta: { canDelete: true, label: "Categorie" },
                             },
                             {
+                                name: "developers",
+                                list: "/developers",
+                                create: "/developers/create",
+                                edit: "/developers/edit/:id",
+                                meta: { canDelete: true, label: "Sviluppatori" },
+                            },
+                            {
                                 name: "collections",
                                 list: "/collections",
+                                create: "/collections/create",
+                                edit: "/collections/edit/:id",
                                 meta: { canDelete: true, label: "Collezioni" },
                             }
                         ]}
@@ -108,8 +125,16 @@ const App = () => {
                                     <Route path="create" element={<CategoryCreate />} />
                                     <Route path="edit/:id" element={<CategoryEdit />} />
                                 </Route>
-                                <Route path="/collections" element={<div>Vista Elenco Collezioni</div>} />
-                                <Route path="*" element={<ErrorComponent />} />
+                                <Route path="/developers">
+                                    <Route index element={<DeveloperList />} />
+                                    <Route path="create" element={<DeveloperCreate />} />
+                                    <Route path="edit/:id" element={<DeveloperEdit />} />
+                                </Route>
+                                <Route path="/collections">
+                                    <Route index element={<CollectionList />} />
+                                    <Route path="create" element={<CollectionCreate />} />
+                                    <Route path="edit/:id" element={<CollectionEdit />} />
+                                </Route>
                             </Route>
 
                             <Route

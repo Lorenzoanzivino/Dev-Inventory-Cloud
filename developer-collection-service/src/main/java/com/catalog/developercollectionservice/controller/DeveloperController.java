@@ -34,4 +34,16 @@ public class DeveloperController {
     public ResponseEntity<DeveloperResponse> getDeveloperById(@PathVariable Long id) {
         return ResponseEntity.ok(queryService.getDeveloperById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateDeveloper(@PathVariable Long id, @Valid @RequestBody DeveloperRequest request) {
+        commandService.updateDeveloper(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDeveloper(@PathVariable Long id) {
+        commandService.deleteDeveloper(id);
+        return ResponseEntity.noContent().build();
+    }
 }
