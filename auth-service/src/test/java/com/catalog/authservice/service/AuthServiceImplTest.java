@@ -42,7 +42,7 @@ class AuthServiceImplTest {
 
     @Test
     void register_WhenNewUser_ShouldSave() {
-        AuthRequest request = new AuthRequest("test@example.com", "password123");
+        AuthRequest request = new AuthRequest("Lorenzo", "test@example.com", "password123");
 
         when(repository.findByEmail(request.email())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(request.password())).thenReturn("encodedPassword");
@@ -55,7 +55,7 @@ class AuthServiceImplTest {
 
     @Test
     void register_WhenUserExists_ShouldThrowException() {
-        AuthRequest request = new AuthRequest("test@example.com", "password123");
+        AuthRequest request = new AuthRequest("Lorenzo", "test@example.com", "password123");
 
         when(repository.findByEmail(request.email())).thenReturn(Optional.of(new UserCredential()));
 
@@ -65,7 +65,7 @@ class AuthServiceImplTest {
 
     @Test
     void login_WhenValidCredentials_ShouldReturnToken() {
-        AuthRequest request = new AuthRequest("test@example.com", "password123");
+        AuthRequest request = new AuthRequest(null, "test@example.com", "password123");
         Authentication authentication = mock(Authentication.class);
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
@@ -79,7 +79,7 @@ class AuthServiceImplTest {
 
     @Test
     void login_WhenInvalidCredentials_ShouldThrowException() {
-        AuthRequest request = new AuthRequest("test@example.com", "wrongpassword");
+        AuthRequest request = new AuthRequest(null, "test@example.com", "wrongpassword");
         Authentication authentication = mock(Authentication.class);
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);

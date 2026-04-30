@@ -15,6 +15,8 @@ public class UserCredential {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String nome;
+
     @Column(nullable = false, unique = true)
     private String email;
 
