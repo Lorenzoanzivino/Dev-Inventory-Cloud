@@ -18,7 +18,8 @@ import { authProvider } from "./authProvider";
 import { axiosInstance } from "./api/axiosInstance";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 
-import { Login } from "./pages/Login"
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 import { CustomSider } from "./components/CustomSider";
 import { Header } from "./components/header";
 
@@ -40,13 +41,11 @@ import { CollectionEdit } from "./pages/collections/edit";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Estensione del dataProvider per mappare le chiamate PATCH verso PUT
 const baseDataProvider = dataProvider(API_URL, axiosInstance);
 const customDataProvider = {
     ...baseDataProvider,
     update: async ({ resource, id, variables }: any) => {
         const url = `${API_URL}/${resource}/${id}`;
-        // Forza l'utilizzo di PUT tramite l'istanza Axios esistente
         const { data } = await axiosInstance.put(url, variables);
         return { data };
     }
@@ -68,7 +67,6 @@ const App = () => {
                                 list: "/resources",
                                 create: "/resources/create",
                                 edit: "/resources/edit/:id",
-                                show: "/resources/show/:id",
                                 meta: { canDelete: true, label: "Risorse" },
                             },
                             {
@@ -135,6 +133,7 @@ const App = () => {
                                     <Route path="create" element={<CollectionCreate />} />
                                     <Route path="edit/:id" element={<CollectionEdit />} />
                                 </Route>
+                                <Route path="*" element={<ErrorComponent />} />
                             </Route>
 
                             <Route
@@ -145,7 +144,7 @@ const App = () => {
                                 }
                             >
                                 <Route path="/login" element={<Login />} />
-                                <Route path="/register" element={<div>Vista Registrazione</div>} />
+                                <Route path="/register" element={<Register />} />
                             </Route>
                         </Routes>
                         <UnsavedChangesNotifier />

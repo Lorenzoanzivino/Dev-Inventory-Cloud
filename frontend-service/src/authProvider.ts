@@ -3,6 +3,21 @@ import { axiosInstance } from "./api/axiosInstance";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Funzione helper per decodificare il nome dal JWT senza librerie esterne
+const decodeToken = (token: string) => {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
+};
+
 export const authProvider: AuthProvider = {
     login: async ({ email, password }) => {
         try {
@@ -11,7 +26,6 @@ export const authProvider: AuthProvider = {
                 password,
             });
 
-            // Estrazione sicura: supporta { token: "..." }, { accessToken: "..." } o stringa pura
             const token = data?.token || data?.accessToken || data;
 
             if (token && typeof token === "string") {
@@ -28,7 +42,29 @@ export const authProvider: AuthProvider = {
                 success: false,
                 error: {
                     name: "Errore di Autenticazione",
-                    message: error.response?.data?.message || "Credenziali non valide. Riprova.",
+                    message: error.response?.data?.message || "Credenziali non valide.",
+                },
+            };
+        }
+    },
+    register: async ({ nome, email, password }) => {
+        try {
+            await axiosInstance.post(`${API_URL}/auth/register`, {
+                nome,
+                email,
+                password,
+            });
+
+            return {
+                success: true,
+                redirectTo: "/login",
+            };
+        } catch (error: any) {
+            return {
+                success: false,
+                error: {
+                    name: "Errore Registrazione",
+                    message: error.response?.data?.message || "Impossibile creare l'account.",
                 },
             };
         }
@@ -42,9 +78,8 @@ export const authProvider: AuthProvider = {
     },
     check: async () => {
         const token = localStorage.getItem("token");
-        if (token) {
-            return { authenticated: true };
-        }
+        if (token) return { authenticated: true };
+
         return {
             authenticated: false,
             logout: true,
@@ -55,15 +90,16 @@ export const authProvider: AuthProvider = {
     getIdentity: async () => {
         const token = localStorage.getItem("token");
         if (token) {
+            const decoded = decodeToken(token);
             return {
                 id: 1,
-                name: "Lorenzo",
+                name: decoded?.sub || decoded?.nome || "Utente", // Legge dal token
+                avatar: "https://i.pravatar.cc/300",
             };
         }
         return null;
     },
     onError: async (error) => {
-        // Legge correttamente lo status 401 o 403 dalla risposta di Axios
         const status = error?.status || error?.response?.status;
         if (status === 401 || status === 403) {
             localStorage.removeItem("token");
