@@ -34,4 +34,16 @@ public class ResourceController {
     public ResponseEntity<ResourceResponse> getResourceById(@PathVariable Long id) {
         return ResponseEntity.ok(queryService.getResourceById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateResource(@PathVariable Long id, @Valid @RequestBody ResourceRequest request) {
+        commandService.updateResource(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+        commandService.deleteResource(id);
+        return ResponseEntity.noContent().build();
+    }
 }

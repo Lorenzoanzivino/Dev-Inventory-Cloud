@@ -11,8 +11,6 @@ import {
 
 const { Text } = Typography;
 
-// Utilizziamo Omit per rimuovere la proprietà 'variant' nativa di AntD
-// ed evitare il conflitto con la nostra versione personalizzata
 interface ButtonProps extends Omit<AntdButtonProps, 'variant'> {
     variant?: 'primary' | 'secondary' | 'danger';
 }
@@ -52,6 +50,7 @@ interface CardProps extends AntdCardProps {}
 
 export const Card: React.FC<CardProps> = ({ children, style, ...props }) => (
     <AntdCard
+        variant="borderless"
         style={{
             backgroundColor: 'rgba(255, 255, 255, 0.6)',
             backdropFilter: 'blur(24px)',

@@ -23,9 +23,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
-            // Salta il controllo auth per le richieste pre-flight CORS (OPTIONS)
+            // STOP ALLE OPTIONS: blocca la richiesta qui e rispondi con 200 OK
             if (exchange.getRequest().getMethod().equals(HttpMethod.OPTIONS)) {
-                return chain.filter(exchange);
+                exchange.getResponse().setStatusCode(HttpStatus.OK);
+                return exchange.getResponse().setComplete(); // NON passa al microservizio
             }
 
             // 1. Controlla se l'header esiste
@@ -34,7 +35,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 return exchange.getResponse().setComplete();
             }
 
-            // 2. Estrai il token pulito (rimuovendo il prefisso "Bearer ")
+            // 2. Estrai il token pulito
             String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 authHeader = authHeader.substring(7);
