@@ -29,4 +29,26 @@ public class ResourceCommandService {
 
         return resourceRepository.save(resource).getId();
     }
+
+    public void updateResource(Long id, ResourceRequest request) {
+        Resource resource = resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + id));
+
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.categoryId()));
+
+        resource.setNome(request.nome());
+        resource.setDescrizione(request.descrizione());
+        resource.setUrl(request.url());
+        resource.setCategory(category);
+
+        resourceRepository.save(resource);
+    }
+
+    public void deleteResource(Long id) {
+        Resource resource = resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + id));
+
+        resourceRepository.delete(resource);
+    }
 }
