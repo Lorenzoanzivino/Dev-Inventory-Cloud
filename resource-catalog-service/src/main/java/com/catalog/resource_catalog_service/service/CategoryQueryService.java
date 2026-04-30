@@ -23,4 +23,10 @@ public class CategoryQueryService {
                 .map(categoryMapper::toResponse)
                 .collect(Collectors.toList());
     }
+
+    public CategoryResponse getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .map(categoryMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
+    }
 }

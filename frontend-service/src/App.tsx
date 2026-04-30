@@ -21,9 +21,14 @@ import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Login } from "./pages/Login"
 import { CustomSider } from "./components/CustomSider";
 import { Header } from "./components/header";
+
 import { ResourceList } from "./pages/resources/list";
 import { ResourceCreate } from "./pages/resources/create";
 import { ResourceEdit } from "./pages/resources/edit";
+
+import { CategoryList } from "./pages/categories/list";
+import { CategoryCreate } from "./pages/categories/create";
+import { CategoryEdit } from "./pages/categories/edit";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,6 +66,8 @@ const App = () => {
                             {
                                 name: "categories",
                                 list: "/categories",
+                                create: "/categories/create",
+                                edit: "/categories/edit/:id",
                                 meta: { canDelete: true, label: "Categorie" },
                             },
                             {
@@ -96,7 +103,11 @@ const App = () => {
                                     <Route path="create" element={<ResourceCreate />} />
                                     <Route path="edit/:id" element={<ResourceEdit />} />
                                 </Route>
-                                <Route path="/categories" element={<div>Vista Elenco Categorie</div>} />
+                                <Route path="/categories">
+                                    <Route index element={<CategoryList />} />
+                                    <Route path="create" element={<CategoryCreate />} />
+                                    <Route path="edit/:id" element={<CategoryEdit />} />
+                                </Route>
                                 <Route path="/collections" element={<div>Vista Elenco Collezioni</div>} />
                                 <Route path="*" element={<ErrorComponent />} />
                             </Route>

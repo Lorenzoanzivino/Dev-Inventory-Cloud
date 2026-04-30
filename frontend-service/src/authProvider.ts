@@ -10,17 +10,25 @@ export const authProvider: AuthProvider = {
                 email,
                 password,
             });
-            localStorage.setItem("token", data.token);
-            return {
-                success: true,
-                redirectTo: "/",
-            };
+
+            // Estrazione sicura: supporta { token: "..." }, { accessToken: "..." } o stringa pura
+            const token = data?.token || data?.accessToken || data;
+
+            if (token && typeof token === "string") {
+                localStorage.setItem("token", token);
+                return {
+                    success: true,
+                    redirectTo: "/",
+                };
+            }
+
+            throw new Error("Formato token non riconosciuto");
         } catch (error: any) {
             return {
                 success: false,
                 error: {
-                    name: "Login Error",
-                    message: error.response?.data?.message || "Credenziali non valide",
+                    name: "Errore di Autenticazione",
+                    message: error.response?.data?.message || "Credenziali non valide. Riprova.",
                 },
             };
         }
@@ -35,9 +43,7 @@ export const authProvider: AuthProvider = {
     check: async () => {
         const token = localStorage.getItem("token");
         if (token) {
-            return {
-                authenticated: true,
-            };
+            return { authenticated: true };
         }
         return {
             authenticated: false,
@@ -57,7 +63,10 @@ export const authProvider: AuthProvider = {
         return null;
     },
     onError: async (error) => {
-        if (error?.status === 401 || error?.status === 403) {
+        // Legge correttamente lo status 401 o 403 dalla risposta di Axios
+        const status = error?.status || error?.response?.status;
+        if (status === 401 || status === 403) {
+            localStorage.removeItem("token");
             return {
                 logout: true,
                 redirectTo: "/login",

@@ -29,4 +29,21 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponse>> getAllCategories() {
         return ResponseEntity.ok(queryService.getAllCategories());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable Long id) {
+        return ResponseEntity.ok(queryService.getCategoryById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest request) {
+        commandService.updateCategory(id, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        commandService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
 }
