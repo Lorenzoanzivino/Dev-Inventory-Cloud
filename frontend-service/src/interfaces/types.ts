@@ -11,3 +11,16 @@ export interface IResource {
     category: ICategory;
     dataInserimento: string;
 }
+
+export interface IDeveloper {
+    id: number;
+    nome: string;
+    email: string;
+}
+
+export interface ICollection {
+    id: number;
+    resourceId: number;
+    resourceName: string;
+    developerName: string;
+}

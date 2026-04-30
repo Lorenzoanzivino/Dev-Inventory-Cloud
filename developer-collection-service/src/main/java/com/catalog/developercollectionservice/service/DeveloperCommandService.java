@@ -20,4 +20,18 @@ public class DeveloperCommandService {
         developer.setEmail(request.email());
         return developerRepository.save(developer).getId();
     }
+
+    public void updateDeveloper(Long id, DeveloperRequest request) {
+        Developer developer = developerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Developer not found with ID: " + id));
+        developer.setNome(request.nome());
+        developer.setEmail(request.email());
+        developerRepository.save(developer);
+    }
+
+    public void deleteDeveloper(Long id) {
+        Developer developer = developerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Developer not found with ID: " + id));
+        developerRepository.delete(developer);
+    }
 }

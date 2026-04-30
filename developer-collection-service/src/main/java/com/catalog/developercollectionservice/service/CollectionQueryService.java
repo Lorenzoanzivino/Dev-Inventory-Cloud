@@ -24,6 +24,28 @@ public class CollectionQueryService {
     private final DeveloperRepository developerRepository;
     private final ResourceClient resourceClient;
 
+    /**
+     * Recupera tutte le assegnazioni del sistema.
+     * Mappa correttamente i nomi per la tabella del frontend.
+     */
+    public List<CollectionItemResponse> getAllCollections() {
+        return collectionRepository.findAll().stream().map(item -> {
+            String devName = (item.getDeveloper() != null) ? item.getDeveloper().getNome() : "Sconosciuto";
+            try {
+                ResourceCatalogResponse resourceData = resourceClient.getResourceById(item.getResourceId());
+                return new CollectionItemResponse(
+                        item.getId(),
+                        item.getResourceId(),
+                        resourceData.nome(), // Mappa su resourceName
+                        devName              // Mappa su developerName
+                );
+            } catch (Exception e) {
+                // Fallback in caso di microservizio catalogo offline
+                return new CollectionItemResponse(item.getId(), item.getResourceId(), "N/D (Errore Catalogo)", devName);
+            }
+        }).collect(Collectors.toList());
+    }
+
     public DeveloperCollectionResponse getDeveloperCollection(Long developerId) {
         Developer developer = developerRepository.findById(developerId)
                 .orElseThrow(() -> new RuntimeException("Sviluppatore non trovato."));
@@ -32,17 +54,15 @@ public class CollectionQueryService {
 
         List<CollectionItemResponse> itemResponses = items.stream().map(item -> {
             try {
-                // Recupera i dati freschi dal microservizio catalogo
                 ResourceCatalogResponse resourceData = resourceClient.getResourceById(item.getResourceId());
                 return new CollectionItemResponse(
                         item.getId(),
                         item.getResourceId(),
                         resourceData.nome(),
-                        resourceData.url()
+                        developer.getNome() // Coerenza: passiamo sempre il nome dev
                 );
             } catch (Exception e) {
-                // Se il catalogo non risponde, restituisci dati parziali (Resilienza)
-                return new CollectionItemResponse(item.getId(), item.getResourceId(), "Risorsa non disponibile", "#");
+                return new CollectionItemResponse(item.getId(), item.getResourceId(), "Risorsa non disponibile", developer.getNome());
             }
         }).collect(Collectors.toList());
 
