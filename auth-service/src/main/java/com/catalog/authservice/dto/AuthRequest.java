@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record AuthRequest(
+        String nome,
+
         @Email(message = "Email non valida")
         @NotBlank(message = "L'email è obbligatoria")
         String email,

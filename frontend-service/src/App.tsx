@@ -1,8 +1,9 @@
+import { useContext } from "react";
 import { Refine, Authenticated } from "@refinedev/core";
 import {
     ErrorComponent,
     useNotificationProvider,
-    ThemedLayout
+    ThemedLayoutV2
 } from "@refinedev/antd";
 import routerBindings, {
     NavigateToResource,
@@ -11,148 +12,144 @@ import routerBindings, {
 } from "@refinedev/react-router-v6";
 import dataProvider from "@refinedev/simple-rest";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import { App as AntdApp } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
 import "@refinedev/antd/dist/reset.css";
 
 import { authProvider } from "./authProvider";
 import { axiosInstance } from "./api/axiosInstance";
-import { ColorModeContextProvider } from "./contexts/color-mode";
+import { ColorModeContextProvider, ColorModeContext } from "./contexts/color-mode";
+import { lightTheme, darkTheme } from "./styles/theme";
+import { APP_TEXTS } from "./constants/texts";
 
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import { ProfilePage } from "./pages/Profile";
 import { CustomSider } from "./components/CustomSider";
 import { Header } from "./components/header";
 
-import { ResourceList } from "./pages/resources/list";
-import { ResourceCreate } from "./pages/resources/create";
-import { ResourceEdit } from "./pages/resources/edit";
-
-import { CategoryList } from "./pages/categories/list";
-import { CategoryCreate } from "./pages/categories/create";
-import { CategoryEdit } from "./pages/categories/edit";
-
-import { DeveloperList } from "./pages/developers/list";
-import { DeveloperCreate } from "./pages/developers/create";
-import { DeveloperEdit } from "./pages/developers/edit";
-
-import { CollectionList } from "./pages/collections/list";
-import { CollectionCreate } from "./pages/collections/create";
-import { CollectionEdit } from "./pages/collections/edit";
+import { ResourceList, ResourceCreate, ResourceEdit } from "./pages/resources";
+import { CategoryList, CategoryCreate, CategoryEdit } from "./pages/categories";
+import { DeveloperList, DeveloperCreate, DeveloperEdit } from "./pages/developers";
+import { CollectionList, CollectionCreate, CollectionEdit } from "./pages/collections";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const baseDataProvider = dataProvider(API_URL, axiosInstance);
-const customDataProvider = {
-    ...baseDataProvider,
-    update: async ({ resource, id, variables }: any) => {
-        const url = `${API_URL}/${resource}/${id}`;
-        const { data } = await axiosInstance.put(url, variables);
-        return { data };
-    }
-};
+const AppThemed = () => {
+    const { mode } = useContext(ColorModeContext);
 
-const App = () => {
     return (
-        <BrowserRouter>
-            <ColorModeContextProvider>
-                <AntdApp>
-                    <Refine
-                        dataProvider={customDataProvider}
-                        authProvider={authProvider}
-                        notificationProvider={useNotificationProvider}
-                        routerProvider={routerBindings}
-                        resources={[
-                            {
-                                name: "resources",
-                                list: "/resources",
-                                create: "/resources/create",
-                                edit: "/resources/edit/:id",
-                                meta: { canDelete: true, label: "Risorse" },
-                            },
-                            {
-                                name: "categories",
-                                list: "/categories",
-                                create: "/categories/create",
-                                edit: "/categories/edit/:id",
-                                meta: { canDelete: true, label: "Categorie" },
-                            },
-                            {
-                                name: "developers",
-                                list: "/developers",
-                                create: "/developers/create",
-                                edit: "/developers/edit/:id",
-                                meta: { canDelete: true, label: "Sviluppatori" },
-                            },
-                            {
-                                name: "collections",
-                                list: "/collections",
-                                create: "/collections/create",
-                                edit: "/collections/edit/:id",
-                                meta: { canDelete: true, label: "Collezioni" },
-                            }
-                        ]}
-                        options={{
-                            syncWithLocation: true,
-                            warnWhenUnsavedChanges: true,
-                        }}
-                    >
-                        <Routes>
-                            <Route
-                                element={
-                                    <Authenticated
-                                        key="authenticated-routes"
-                                        fallback={<CatchAllNavigate to="/login" />}
+        <ConfigProvider theme={mode === "light" ? lightTheme : darkTheme}>
+            <AntdApp>
+                <Refine
+                    dataProvider={dataProvider(API_URL, axiosInstance)}
+                    authProvider={authProvider}
+                    notificationProvider={useNotificationProvider}
+                    routerProvider={routerBindings}
+                    resources={[
+                        {
+                            name: "resources",
+                            list: "/resources",
+                            create: "/resources/create",
+                            edit: "/resources/edit/:id",
+                            meta: { canDelete: true, label: APP_TEXTS.navigation.resources },
+                        },
+                        {
+                            name: "categories",
+                            list: "/categories",
+                            create: "/categories/create",
+                            edit: "/categories/edit/:id",
+                            meta: { canDelete: true, label: APP_TEXTS.navigation.categories },
+                        },
+                        {
+                            name: "developers",
+                            list: "/developers",
+                            create: "/developers/create",
+                            edit: "/developers/edit/:id",
+                            meta: { canDelete: true, label: APP_TEXTS.navigation.developers },
+                        },
+                        {
+                            name: "collections",
+                            list: "/collections",
+                            create: "/collections/create",
+                            edit: "/collections/edit/:id",
+                            meta: { canDelete: true, label: APP_TEXTS.navigation.collections },
+                        },
+                        {
+                            name: "profile",
+                            list: "/profile",
+                            meta: { label: APP_TEXTS.navigation.profile },
+                        }
+                    ]}
+                    options={{
+                        syncWithLocation: true,
+                        warnWhenUnsavedChanges: true,
+                    }}
+                >
+                    <Routes>
+                        <Route
+                            element={
+                                <Authenticated
+                                    key="authenticated-routes"
+                                    fallback={<CatchAllNavigate to="/login" />}
+                                >
+                                    <ThemedLayoutV2
+                                        Header={Header}
+                                        Sider={CustomSider}
                                     >
-                                        <ThemedLayout
-                                            Header={Header}
-                                            Sider={CustomSider}
-                                        >
-                                            <Outlet />
-                                        </ThemedLayout>
-                                    </Authenticated>
-                                }
-                            >
-                                <Route index element={<NavigateToResource resource="resources" />} />
-                                <Route path="/resources">
-                                    <Route index element={<ResourceList />} />
-                                    <Route path="create" element={<ResourceCreate />} />
-                                    <Route path="edit/:id" element={<ResourceEdit />} />
-                                </Route>
-                                <Route path="/categories">
-                                    <Route index element={<CategoryList />} />
-                                    <Route path="create" element={<CategoryCreate />} />
-                                    <Route path="edit/:id" element={<CategoryEdit />} />
-                                </Route>
-                                <Route path="/developers">
-                                    <Route index element={<DeveloperList />} />
-                                    <Route path="create" element={<DeveloperCreate />} />
-                                    <Route path="edit/:id" element={<DeveloperEdit />} />
-                                </Route>
-                                <Route path="/collections">
-                                    <Route index element={<CollectionList />} />
-                                    <Route path="create" element={<CollectionCreate />} />
-                                    <Route path="edit/:id" element={<CollectionEdit />} />
-                                </Route>
-                                <Route path="*" element={<ErrorComponent />} />
+                                        <Outlet />
+                                    </ThemedLayoutV2>
+                                </Authenticated>
+                            }
+                        >
+                            <Route index element={<NavigateToResource resource="resources" />} />
+                            <Route path="/resources/*">
+                                <Route index element={<ResourceList />} />
+                                <Route path="create" element={<ResourceCreate />} />
+                                <Route path="edit/:id" element={<ResourceEdit />} />
                             </Route>
+                            <Route path="/categories/*">
+                                <Route index element={<CategoryList />} />
+                                <Route path="create" element={<CategoryCreate />} />
+                                <Route path="edit/:id" element={<CategoryEdit />} />
+                            </Route>
+                            <Route path="/developers/*">
+                                <Route index element={<DeveloperList />} />
+                                <Route path="create" element={<DeveloperCreate />} />
+                                <Route path="edit/:id" element={<DeveloperEdit />} />
+                            </Route>
+                            <Route path="/collections/*">
+                                <Route index element={<CollectionList />} />
+                                <Route path="create" element={<CollectionCreate />} />
+                                <Route path="edit/:id" element={<CollectionEdit />} />
+                            </Route>
+                            <Route path="/profile" element={<ProfilePage />} />
+                            <Route path="*" element={<ErrorComponent />} />
+                        </Route>
 
-                            <Route
-                                element={
-                                    <Authenticated key="auth-pages" fallback={<Outlet />}>
-                                        <NavigateToResource />
-                                    </Authenticated>
-                                }
-                            >
-                                <Route path="/login" element={<Login />} />
-                                <Route path="/register" element={<Register />} />
-                            </Route>
-                        </Routes>
-                        <UnsavedChangesNotifier />
-                    </Refine>
-                </AntdApp>
-            </ColorModeContextProvider>
-        </BrowserRouter>
+                        <Route
+                            element={
+                                <Authenticated key="auth-pages" fallback={<Outlet />}>
+                                    <NavigateToResource />
+                                </Authenticated>
+                            }
+                        >
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                        </Route>
+                    </Routes>
+                    <UnsavedChangesNotifier />
+                </Refine>
+            </AntdApp>
+        </ConfigProvider>
     );
 };
+
+const App = () => (
+    <BrowserRouter>
+        <ColorModeContextProvider>
+            <AppThemed />
+        </ColorModeContextProvider>
+    </BrowserRouter>
+);
 
 export default App;
