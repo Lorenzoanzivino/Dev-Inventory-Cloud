@@ -14,14 +14,16 @@ import java.time.LocalDateTime;
 public class Resource {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Fondamentale per l'autoincrement in PostgreSQL
-    private Long id; // Usiamo Long (classe wrapper) invece di int per gestire i valori null prima della persistenza
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String nome;
 
     private String descrizione;
 
+    // URL non più obbligatorio a livello di DB
+    @Column(nullable = true)
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)

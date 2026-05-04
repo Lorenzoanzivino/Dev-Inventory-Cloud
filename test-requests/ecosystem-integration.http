@@ -1,60 +1,109 @@
-### 1. [CATALOG] Crea una Categoria
-POST http://localhost/api/v1/categories
-Content-Type: application/json
+### --- FASE 2: TEST GERARCHIA (ADMIN) ---
 
-{
-  "nome": "Frontend Frameworks"
-}
-
-### 2. [CATALOG] Crea una Risorsa (ID 1)
-# Assicurati che l'ID della categoria sia corretto (probabilmente 1 se il DB è pulito)
-POST http://localhost/api/v1/resources
-Content-Type: application/json
-
-{
-  "nome": "React",
-  "descrizione": "Libreria JS per interfacce",
-  "url": "https://react.dev",
-  "categoryId": 1
-}
-
-### 3. [DEVELOPER] Crea un Developer (ID 1)
-POST http://localhost/api/v1/developers
+### 1. Registrazione di Lorenzo (Nasce come DEVELOPER)
+POST http://localhost/api/v1/auth/register
 Content-Type: application/json
 
 {
   "nome": "Lorenzo",
-  "email": "lorenzo.dev@example.com"
+  "email": "lorenzoanzivino1997@gmail.com",
+  "password": "password123"
 }
 
-### 4. [INTEGRATION] Aggiungi la risorsa alla collezione (Feign Test)
-# Questo test verifica se il developer-service riesce a chiamare il resource-service
-POST http://localhost/api/v1/developers/collection
+### >>> FERMATI QUI: Esegui il Passaggio 2 nel terminale prima di procedere <<<
+
+### 2. Login di Lorenzo (Prendi il JWT e sostituiscilo in TOKEN_ADMIN nei test successivi)
+POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "developerId": 1,
-  "resourceId": 1
+  "email": "lorenzoanzivino1997@gmail.com",
+  "password": "password123"
 }
 
-### 5. [ERROR TEST] Aggiunta risorsa inesistente
-# Deve restituire 400 Bad Request perché Feign non troverà la risorsa 999
-POST http://localhost/api/v1/developers/collection
+### 3. [ADMIN] Crea un Progetto (ID previsto: 1)
+POST http://localhost/api/v1/projects
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+
+{
+  "nome": "MyTrainUp",
+  "descrizione": "Progetto gestionale per personal trainer"
+}
+
+### 4. [ADMIN] Crea una Categoria nel Progetto 1 (ID previsto: 1)
+POST http://localhost/api/v1/categories
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+
+{
+  "nome": "Backend Services",
+  "projectId": 1
+}
+
+### 5. [ADMIN] Crea una Risorsa nella Categoria 1 (Senza URL)
+POST http://localhost/api/v1/resources
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+
+{
+  "nome": "Database Credentials",
+  "descrizione": "Credenziali per il database PostgreSQL di produzione",
+  "url": null,
+  "categoryId": 1
+}
+
+### --- FASE 1: RE-TEST SICUREZZA E SYNC (DEVELOPER) ---
+
+### 6. Registrazione di Luca (Ruolo di default: DEVELOPER)
+POST http://localhost/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "developerId": 1,
-  "resourceId": 999
+  "nome": "Luca Developer",
+  "email": "luca.dev@onyx.com",
+  "password": "password123"
 }
 
-### 6. [INTEGRATION] Recupero Collezione Completa (Aggregata)
-GET http://localhost/api/v1/developers/1/collection
-
-### Test: Aggiunta risorsa alla collezione
-POST http://localhost/api/v1/developers/collection
+### 7. Login di Luca (Prendi il JWT e sostituiscilo in TOKEN_LUCA nei test successivi)
+POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "developerId": 1,
-  "resourceId": 1
+  "email": "luca.dev@onyx.com",
+  "password": "password123"
 }
+
+### 8. [TEST SICUREZZA 403] Luca prova a creare un Progetto
+POST http://localhost/api/v1/projects
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwic3ViIjoibHVjYS5kZXZAb255eC5jb20iLCJpYXQiOjE3Nzc4ODQ4NzEsImV4cCI6MTc3Nzg4ODQ3MX0.7u1MRtqkjzyrChA9HTo84r8ACCHgbHADz0IQj9ck_ac
+
+{
+  "nome": "Hacker Project",
+  "descrizione": "Questo non deve passare"
+}
+
+### 9. [VERIFICA SINCRONIZZAZIONE] Lista Developers
+GET http://localhost/api/v1/developers
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwic3ViIjoibHVjYS5kZXZAb255eC5jb20iLCJpYXQiOjE3Nzc4ODQ4NzEsImV4cCI6MTc3Nzg4ODQ3MX0.7u1MRtqkjzyrChA9HTo84r8ACCHgbHADz0IQj9ck_ac
+
+### --- FASE 3: TEST ASSEGNAZIONE PROGETTO ---
+
+### 10. [ADMIN] Assegna il Progetto 1 a Luca (Developer ID: 2)
+POST http://localhost/api/v1/assignments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+
+{
+  "developerId": 2,
+  "projectId": 1
+}
+
+### 11. [ADMIN/DEVELOPER] Verifica le assegnazioni di Luca
+GET http://localhost/api/v1/assignments/developer/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+
+### 12. [ADMIN] Rimuovi l'assegnazione (Test opzionale)
+DELETE http://localhost/api/v1/assignments/developer/2/project/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ

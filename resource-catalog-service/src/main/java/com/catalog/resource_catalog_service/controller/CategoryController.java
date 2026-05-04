@@ -35,6 +35,11 @@ public class CategoryController {
         return ResponseEntity.ok(queryService.getCategoryById(id));
     }
 
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<CategoryResponse>> getByProject(@PathVariable Long projectId) {
+        return ResponseEntity.ok(queryService.getCategoriesByProject(projectId));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryRequest request) {
         commandService.updateCategory(id, request);

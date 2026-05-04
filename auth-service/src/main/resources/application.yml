@@ -26,3 +26,7 @@ springdoc:
     servers:
       - url: ${API_GATEWAY_URL}
         description: "API Gateway"
+
+services:
+  developer-collection:
+    url: ${DEVELOPER_COLLECTION_SERVICE_URL}

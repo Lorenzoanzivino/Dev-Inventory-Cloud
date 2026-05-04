@@ -91,6 +91,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION=${JWT_EXPIRATION}
       - API_GATEWAY_URL=${API_GATEWAY_URL}
+      - DEVELOPER_COLLECTION_SERVICE_URL=${DEVELOPER_COLLECTION_SERVICE_URL} # <-- AGGIUNTO PER FEIGN
     depends_on:
       auth-db:
         condition: service_healthy
