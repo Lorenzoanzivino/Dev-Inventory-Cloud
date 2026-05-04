@@ -25,16 +25,19 @@ class DeveloperCommandServiceTest {
 
     @Test
     void createDeveloper_ShouldSaveAndReturnId() {
-        DeveloperRequest request = new DeveloperRequest("Test Developer", "test@example.com");
+        // Arrange
+        DeveloperRequest request = new DeveloperRequest("Lorenzo", "lorenzo@test.com");
         Developer savedDeveloper = new Developer();
         savedDeveloper.setId(1L);
-        savedDeveloper.setNome("Test Developer");
-        savedDeveloper.setEmail("test@example.com");
+        savedDeveloper.setNome("Lorenzo");
+        savedDeveloper.setEmail("lorenzo@test.com");
 
         when(developerRepository.save(any(Developer.class))).thenReturn(savedDeveloper);
 
+        // Act
         Long resultId = commandService.createDeveloper(request);
 
+        // Assert
         assertEquals(1L, resultId);
         verify(developerRepository).save(any(Developer.class));
     }
