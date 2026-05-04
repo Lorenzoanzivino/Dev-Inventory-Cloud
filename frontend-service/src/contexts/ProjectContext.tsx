@@ -1,5 +1,4 @@
-// src/contexts/ProjectContext.tsx
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, useEffect, ReactNode } from "react";
 
 type ProjectContextType = {
     projectId: number | null;
@@ -12,7 +11,21 @@ export const ProjectContext = createContext<ProjectContextType>({
 });
 
 export const ProjectContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [projectId, setProjectId] = useState<number | null>(null);
+    // Carica il valore iniziale dal localStorage se presente
+    const [projectId, setProjectIdState] = useState<number | null>(() => {
+        const saved = localStorage.getItem("selectedProjectId");
+        return saved ? parseInt(saved, 10) : null;
+    });
+
+    // Funzione per aggiornare sia lo stato che il localStorage
+    const setProjectId = (id: number | null) => {
+        setProjectIdState(id);
+        if (id) {
+            localStorage.setItem("selectedProjectId", id.toString());
+        } else {
+            localStorage.removeItem("selectedProjectId");
+        }
+    };
 
     return (
         <ProjectContext.Provider value={{ projectId, setProjectId }}>
