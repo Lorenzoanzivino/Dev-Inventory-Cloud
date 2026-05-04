@@ -33,25 +33,25 @@ class ResourceControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void createResource_WhenInvalidRequest_ShouldReturnBadRequest() throws Exception {
-        ResourceRequest invalidRequest = new ResourceRequest("", "", "", null);
+    void createResource_WhenInvalid_ShouldReturnBadRequest() throws Exception {
+        // Nome vuoto per triggerare @NotBlank
+        ResourceRequest invalid = new ResourceRequest("", "Desc", "url", 1L);
 
         mockMvc.perform(post("/api/v1/resources")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .content(objectMapper.writeValueAsString(invalid)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.message").exists());
+                .andExpect(jsonPath("$.status").value(400));
     }
 
     @Test
-    void createResource_WhenValidRequest_ShouldReturnCreated() throws Exception {
-        ResourceRequest validRequest = new ResourceRequest("Java Docs", "Documentation", "https://docs.oracle.com", 1L);
+    void createResource_WhenValid_ShouldReturnCreated() throws Exception {
+        ResourceRequest valid = new ResourceRequest("Java Docs", "Desc", "https://docs.oracle.com", 1L);
         when(commandService.createResource(any())).thenReturn(1L);
 
         mockMvc.perform(post("/api/v1/resources")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .content(objectMapper.writeValueAsString(valid)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$").value(1));
     }

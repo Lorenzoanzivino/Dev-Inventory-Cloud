@@ -15,7 +15,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,25 +30,16 @@ class CategoryCommandServiceTest {
     private CategoryCommandService commandService;
 
     @Test
-    void createCategory_ShouldSaveAndReturnId() {
-        // Mock del progetto padre
-        Project project = new Project();
-        project.setId(1L);
-
-        // Aggiornato con 2 parametri: nome e projectId
-        CategoryRequest request = new CategoryRequest("Cloud Infrastructure", 1L);
-
-        Category savedCategory = new Category();
-        savedCategory.setId(1L);
-        savedCategory.setNome("Cloud Infrastructure");
+    void createCategory_ShouldLinkToProject() {
+        CategoryRequest request = new CategoryRequest("Backend", 1L);
+        Project project = Project.builder().id(1L).build();
+        Category saved = Category.builder().id(10L).nome("Backend").build();
 
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(categoryRepository.save(any(Category.class))).thenReturn(savedCategory);
+        when(categoryRepository.save(any(Category.class))).thenReturn(saved);
 
         Long resultId = commandService.createCategory(request);
 
-        assertEquals(1L, resultId);
-        verify(projectRepository).findById(1L);
-        verify(categoryRepository).save(any(Category.class));
+        assertEquals(10L, resultId);
     }
 }

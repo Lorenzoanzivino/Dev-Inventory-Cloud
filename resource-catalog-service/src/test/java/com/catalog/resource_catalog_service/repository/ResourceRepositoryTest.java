@@ -1,16 +1,17 @@
 package com.catalog.resource_catalog_service.repository;
 
 import com.catalog.resource_catalog_service.entity.Category;
+import com.catalog.resource_catalog_service.entity.Project;
 import com.catalog.resource_catalog_service.entity.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@DataJpaTest(properties = {
+        "spring.jpa.hibernate.ddl-auto=create-drop"
+})
 class ResourceRepositoryTest {
 
     @Autowired
@@ -19,16 +20,19 @@ class ResourceRepositoryTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Test
-    void saveResource_ShouldPersistWithCategory() {
-        Category category = new Category();
-        category.setNome("DevOps");
-        category = categoryRepository.save(category);
+    @Autowired
+    private ProjectRepository projectRepository;
 
-        Resource resource = new Resource();
-        resource.setNome("Docker Docs");
-        resource.setUrl("https://docs.docker.com");
-        resource.setCategory(category);
+    @Test
+    void saveResource_ShouldPersistWithHierarchy() {
+        Project project = projectRepository.save(Project.builder().nome("Progetto").build());
+        Category category = categoryRepository.save(Category.builder().nome("DevOps").project(project).build());
+
+        Resource resource = Resource.builder()
+                .nome("Docker Docs")
+                .url("https://docs.docker.com")
+                .category(category)
+                .build();
 
         Resource saved = resourceRepository.save(resource);
 
