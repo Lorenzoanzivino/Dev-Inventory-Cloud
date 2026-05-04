@@ -89,12 +89,20 @@ public class AuthServiceImpl implements AuthService {
         );
 
         if (authenticate.isAuthenticated()) {
+<<<<<<< Updated upstream
             // Recupera l'utente per ottenere il ruolo
             UserCredential user = repository.findByEmail(request.email())
                     .orElseThrow(() -> new RuntimeException("Errore interno: Utente non trovato"));
 
             // Passa l'email e il ruolo al generatore JWT
             String token = jwtUtil.generateToken(request.email(), user.getRole().name());
+=======
+            UserCredential user = repository.findByEmail(request.email())
+                    .orElseThrow(() -> new RuntimeException("Errore interno: Utente non trovato"));
+
+            // Passa email, ruolo e ID utente (che corrisponde al Developer ID per sincronizzazione)
+            String token = jwtUtil.generateToken(request.email(), user.getRole().name(), user.getId());
+>>>>>>> Stashed changes
             return new AuthResponse(token);
         } else {
             throw new RuntimeException("Accesso negato: credenziali non valide");

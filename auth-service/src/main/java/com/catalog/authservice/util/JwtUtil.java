@@ -21,10 +21,17 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
+<<<<<<< Updated upstream
     // Aggiunto il parametro 'role'
     public String generateToken(String email, String role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role); // Inserisce il ruolo nel payload del JWT
+=======
+    public String generateToken(String email, String role, Long userId) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
+        claims.put("userId", userId); // Inserisce l'ID nel payload
+>>>>>>> Stashed changes
         return createToken(claims, email);
     }
 

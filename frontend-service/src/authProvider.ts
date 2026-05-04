@@ -3,8 +3,8 @@ import { axiosInstance } from "./api/axiosInstance";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Funzione helper per decodificare il nome dal JWT senza librerie esterne
-const decodeToken = (token: string) => {
+// Funzione helper esportata per decodificare il JWT
+export const decodeToken = (token: string) => {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -86,14 +86,23 @@ export const authProvider: AuthProvider = {
             redirectTo: "/login",
         };
     },
-    getPermissions: async () => null,
+    // Ritorna il ruolo estratto dal token
+    getPermissions: async () => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const decoded = decodeToken(token);
+            return decoded?.role || null;
+        }
+        return null;
+    },
     getIdentity: async () => {
         const token = localStorage.getItem("token");
         if (token) {
             const decoded = decodeToken(token);
             return {
-                id: 1,
-                name: decoded?.sub || decoded?.nome || "Utente", // Legge dal token
+                id: decoded?.sub || 1,
+                name: decoded?.sub || decoded?.nome || "Utente",
+                role: decoded?.role || "DEVELOPER",
                 avatar: "https://i.pravatar.cc/300",
             };
         }
