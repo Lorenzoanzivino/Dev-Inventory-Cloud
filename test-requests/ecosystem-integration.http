@@ -24,7 +24,7 @@ Content-Type: application/json
 ### 3. [ADMIN] Crea un Progetto (ID previsto: 1)
 POST http://localhost/api/v1/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
 
 {
   "nome": "MyTrainUp",
@@ -34,7 +34,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3Jlb
 ### 4. [ADMIN] Crea una Categoria nel Progetto 1 (ID previsto: 1)
 POST http://localhost/api/v1/categories
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
 
 {
   "nome": "Backend Services",
@@ -44,7 +44,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3Jlb
 ### 5. [ADMIN] Crea una Risorsa nella Categoria 1 (Senza URL)
 POST http://localhost/api/v1/resources
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
 
 {
   "nome": "Database Credentials",
@@ -77,7 +77,7 @@ Content-Type: application/json
 ### 8. [TEST SICUREZZA 403] Luca prova a creare un Progetto
 POST http://localhost/api/v1/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwic3ViIjoibHVjYS5kZXZAb255eC5jb20iLCJpYXQiOjE3Nzc4ODQ4NzEsImV4cCI6MTc3Nzg4ODQ3MX0.7u1MRtqkjzyrChA9HTo84r8ACCHgbHADz0IQj9ck_ac
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwidXNlcklkIjoyLCJzdWIiOiJsdWNhLmRldkBvbnl4LmNvbSIsImlhdCI6MTc3Nzg5NDczNSwiZXhwIjoxNzc3ODk2NTM1fQ.YPSHqWSMqSUTAe2vhg3jAEgxShozvUvxEHX1RIv4zUc
 
 {
   "nome": "Hacker Project",
@@ -86,14 +86,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwic3ViIjoib
 
 ### 9. [VERIFICA SINCRONIZZAZIONE] Lista Developers
 GET http://localhost/api/v1/developers
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwic3ViIjoibHVjYS5kZXZAb255eC5jb20iLCJpYXQiOjE3Nzc4ODQ4NzEsImV4cCI6MTc3Nzg4ODQ3MX0.7u1MRtqkjzyrChA9HTo84r8ACCHgbHADz0IQj9ck_ac
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwidXNlcklkIjoyLCJzdWIiOiJsdWNhLmRldkBvbnl4LmNvbSIsImlhdCI6MTc3Nzg5NDczNSwiZXhwIjoxNzc3ODk2NTM1fQ.YPSHqWSMqSUTAe2vhg3jAEgxShozvUvxEHX1RIv4zUc
 
 ### --- FASE 3: TEST ASSEGNAZIONE PROGETTO ---
 
 ### 10. [ADMIN] Assegna il Progetto 1 a Luca (Developer ID: 2)
 POST http://localhost/api/v1/assignments
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
 
 {
   "developerId": 2,
@@ -102,8 +102,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3Jlb
 
 ### 11. [ADMIN/DEVELOPER] Verifica le assegnazioni di Luca
 GET http://localhost/api/v1/assignments/developer/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
 
 ### 12. [ADMIN] Rimuovi l'assegnazione (Test opzionale)
 DELETE http://localhost/api/v1/assignments/developer/2/project/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiJsb3JlbnpvYW56aXZpbm8xOTk3QGdtYWlsLmNvbSIsImlhdCI6MTc3Nzg4NDcwNSwiZXhwIjoxNzc3ODg4MzA1fQ.rfmTKTfVtYg6bWjw0Xqv4BzNne5vwKI6uplzW2zrRxQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
