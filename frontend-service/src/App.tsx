@@ -1,5 +1,6 @@
+// src/App.tsx
 import { useContext } from "react";
-import { Refine, Authenticated } from "@refinedev/core";
+import { Refine, Authenticated, AccessControlProvider } from "@refinedev/core";
 import {
     ErrorComponent,
     useNotificationProvider,
@@ -18,6 +19,7 @@ import "@refinedev/antd/dist/reset.css";
 import { authProvider } from "./authProvider";
 import { axiosInstance } from "./api/axiosInstance";
 import { ColorModeContextProvider, ColorModeContext } from "./contexts/color-mode";
+import { ProjectContextProvider } from "./contexts/ProjectContext";
 import { lightTheme, darkTheme } from "./styles/theme";
 import { APP_TEXTS } from "./constants/texts";
 
@@ -32,7 +34,39 @@ import { CategoryList, CategoryCreate, CategoryEdit } from "./pages/categories";
 import { DeveloperList, DeveloperCreate, DeveloperEdit } from "./pages/developers";
 import { CollectionList, CollectionCreate, CollectionEdit } from "./pages/collections";
 
+import { ThemedSiderV2 } from "@refinedev/antd";
+
 const API_URL = import.meta.env.VITE_API_URL;
+
+// Configurazione Access Control (RBAC)
+const accessControlProvider: AccessControlProvider = {
+    can: async ({ resource, action }) => {
+        const role = await authProvider.getPermissions?.();
+
+        // Admin ha accesso totale
+        if (role === "ADMIN") {
+            return { can: true };
+        }
+
+        // Developer ha accesso limitato
+        if (role === "DEVELOPER") {
+            if (resource === "profile") {
+                return { can: true };
+            }
+            // Temporaneo: permesso solo in lettura sulle risorse finché non creiamo "My Desk"
+            if (resource === "resources" && action === "list") {
+                return { can: true };
+            }
+
+            return {
+                can: false,
+                reason: "Accesso negato. Riservato agli amministratori.",
+            };
+        }
+
+        return { can: false };
+    },
+};
 
 const AppThemed = () => {
     const { mode } = useContext(ColorModeContext);
@@ -43,6 +77,7 @@ const AppThemed = () => {
                 <Refine
                     dataProvider={dataProvider(API_URL, axiosInstance)}
                     authProvider={authProvider}
+                    accessControlProvider={accessControlProvider}
                     notificationProvider={useNotificationProvider}
                     routerProvider={routerBindings}
                     resources={[
@@ -94,7 +129,7 @@ const AppThemed = () => {
                                 >
                                     <ThemedLayoutV2
                                         Header={Header}
-                                        Sider={CustomSider}
+                                        Sider={ThemedSiderV2} // Sostituisci CustomSider con ThemedSiderV2 temporaneamente
                                     >
                                         <Outlet />
                                     </ThemedLayoutV2>
@@ -147,7 +182,9 @@ const AppThemed = () => {
 const App = () => (
     <BrowserRouter>
         <ColorModeContextProvider>
-            <AppThemed />
+            <ProjectContextProvider>
+                <AppThemed />
+            </ProjectContextProvider>
         </ColorModeContextProvider>
     </BrowserRouter>
 );
