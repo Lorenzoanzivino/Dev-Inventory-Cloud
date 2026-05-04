@@ -22,4 +22,9 @@ public class UserCredential {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.DEVELOPER;
 }

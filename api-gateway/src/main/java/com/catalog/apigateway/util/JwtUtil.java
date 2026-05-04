@@ -1,5 +1,6 @@
 package com.catalog.apigateway.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,8 +16,12 @@ public class JwtUtil {
     private String secret;
 
     public void validateToken(final String token) {
-        // Se il token è manomesso o scaduto, questa riga lancerà un'eccezione
         Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+    }
+
+    // NUOVO METODO: Estrae tutte le informazioni (email, ruolo, ecc.)
+    public Claims getClaims(final String token) {
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
 
     private Key getSignKey() {

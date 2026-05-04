@@ -29,4 +29,10 @@ public class CategoryQueryService {
                 .map(categoryMapper::toResponse)
                 .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
     }
+
+    public List<CategoryResponse> getCategoriesByProject(Long projectId) {
+        return categoryRepository.findByProjectId(projectId).stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
+    }
 }
