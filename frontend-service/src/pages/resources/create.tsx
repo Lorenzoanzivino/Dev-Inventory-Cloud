@@ -1,24 +1,36 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Create, useForm, useSelect } from "@refinedev/antd";
-import { Form, Select } from "antd";
+import { Form, Select, Typography } from "antd";
 import { Input, Button, Card } from "../../components/ui/Primitives";
 import { IResource, ICategory } from "../../interfaces/types";
 import { labels } from "../../assets/labels";
+import { ProjectContext } from "../../contexts/ProjectContext";
+
+const { Text } = Typography;
 
 export const ResourceCreate = () => {
-    // Gestione del form con Refine
+    const { projectId } = useContext(ProjectContext);
+
+    // Inizializziamo il form normalmente
     const { formProps, saveButtonProps } = useForm<IResource>();
 
-    // Caricamento dinamico delle categorie per la Select
+    // Caricamento categorie filtrate per il progetto attivo
     const { selectProps: categorySelectProps } = useSelect<ICategory>({
         resource: "categories",
-        optionLabel: "nome", // Visualizza il nome nel dropdown
-        optionValue: "id",   // Invia l'ID al backend
+        optionLabel: "nome",
+        optionValue: "id",
+        filters: [
+            {
+                field: "projectId",
+                operator: "eq",
+                value: projectId,
+            },
+        ],
     });
 
     return (
         <Create
-            title={labels.forms.resourceTitle}
+            title={<Text style={{ fontSize: '24px', fontWeight: 900, color: '#2D3748' }}>{labels.forms.resourceTitle}</Text>}
             footerButtons={() => (
                 <Button {...saveButtonProps} variant="primary">
                     {labels.forms.btn}
@@ -26,7 +38,20 @@ export const ResourceCreate = () => {
             )}
         >
             <Card style={{ padding: "32px" }}>
-                <Form {...formProps} layout="vertical">
+                <Form
+                    {...formProps}
+                    form={formProps.form}
+                    layout="vertical"
+                    // Usiamo 'any' per evitare il conflitto tra i dati del form e l'interfaccia IResource
+                    onFinish={(values: any) => {
+                        if (formProps.onFinish) {
+                            formProps.onFinish({
+                                ...values,
+                                projectId: projectId,
+                            });
+                        }
+                    }}
+                >
                     <Form.Item
                         label={labels.forms.name}
                         name="nome"
@@ -59,8 +84,6 @@ export const ResourceCreate = () => {
                             {...categorySelectProps}
                             placeholder="Seleziona una categoria"
                             style={{ height: '56px' }}
-                            // Nuova sintassi AntD 5
-                            styles={{ popup: { root: { borderRadius: '16px' } } }}
                         />
                     </Form.Item>
                 </Form>

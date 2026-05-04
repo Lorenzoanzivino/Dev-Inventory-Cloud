@@ -1,27 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Edit, useForm, useSelect } from "@refinedev/antd";
-import { Form, Select } from "antd";
+import { Form, Select, Typography } from "antd";
 import { Input, Button, Card } from "../../components/ui/Primitives";
 import { IResource, ICategory } from "../../interfaces/types";
+import { ProjectContext } from "../../contexts/ProjectContext";
+
+const { Text } = Typography;
 
 export const ResourceEdit = () => {
-    // Manteniamo IResource per la gestione della query di caricamento
+    const { projectId } = useContext(ProjectContext);
     const { formProps, saveButtonProps, queryResult } = useForm<IResource>();
 
-    // Recuperiamo i dati per popolare i valori di default se necessario
-    const resourceData = queryResult?.data?.data;
-
+    // Caricamento categorie filtrate per il progetto selezionato
     const { selectProps: categorySelectProps } = useSelect<ICategory>({
         resource: "categories",
-        defaultValue: resourceData?.category?.id,
         optionLabel: "nome",
         optionValue: "id",
+        filters: [
+            {
+                field: "projectId",
+                operator: "eq",
+                value: projectId,
+            },
+        ],
     });
 
     return (
         <Edit
-            title="Modifica Risorsa"
-            saveButtonProps={saveButtonProps}
+            title={<Text style={{ fontSize: '24px', fontWeight: 900, color: '#2D3748' }}>Modifica Risorsa</Text>}
             footerButtons={() => (
                 <Button {...saveButtonProps} variant="primary">
                     Salva Modifiche
@@ -31,15 +37,17 @@ export const ResourceEdit = () => {
             <Card style={{ padding: "32px" }}>
                 <Form
                     {...formProps}
+                    form={formProps.form} // Fix warning istanza non connessa
                     layout="vertical"
-                    // Usiamo 'any' per i valori del form per risolvere il conflitto TS2322.
-                    // Questo permette di manipolare l'oggetto values liberamente prima del commit.
                     onFinish={(values: any) => {
-                        return formProps.onFinish?.({
-                            ...values,
-                            // Assicuriamo che categoryId sia presente per il DTO ResourceRequest del backend
-                            categoryId: values.category?.id || values.categoryId,
-                        });
+                        if (formProps.onFinish) {
+                            formProps.onFinish({
+                                ...values,
+                                // Forza il projectId del contesto e mappa correttamente l'ID categoria
+                                projectId: projectId,
+                                categoryId: values.category?.id || values.categoryId,
+                            });
+                        }
                     }}
                 >
                     <Form.Item
@@ -67,14 +75,13 @@ export const ResourceEdit = () => {
 
                     <Form.Item
                         label="Categoria"
-                        name={["category", "id"]} // Mappa direttamente l'ID nidificato nell'oggetto IResource
+                        name={["category", "id"]}
                         rules={[{ required: true, message: "La categoria è obbligatoria" }]}
                     >
                         <Select
                             {...categorySelectProps}
                             placeholder="Seleziona categoria"
                             style={{ height: '56px' }}
-                            styles={{ popup: { root: { borderRadius: '16px' } } }}
                         />
                     </Form.Item>
                 </Form>
