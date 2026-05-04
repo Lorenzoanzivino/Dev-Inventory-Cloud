@@ -90,11 +90,9 @@ public class AuthServiceImpl implements AuthService {
         if (request.nome() != null) {
             user.setNome(request.nome());
         }
-
         if (request.password() != null && !request.password().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.password()));
         }
-
         repository.save(user);
         log.info("Profilo aggiornato per l'utente: {}", email);
     }
