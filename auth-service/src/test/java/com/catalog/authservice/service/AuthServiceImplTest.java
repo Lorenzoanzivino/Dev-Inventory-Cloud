@@ -1,10 +1,8 @@
-// auth-service/src/test/java/com/catalog/authservice/service/AuthServiceImplTest.java
 package com.catalog.authservice.service;
 
 import com.catalog.authservice.client.DeveloperClient;
 import com.catalog.authservice.dto.AuthRequest;
 import com.catalog.authservice.dto.AuthResponse;
-import com.catalog.authservice.entity.Role;
 import com.catalog.authservice.entity.UserCredential;
 import com.catalog.authservice.repository.UserCredentialRepository;
 import com.catalog.authservice.util.JwtUtil;
@@ -43,11 +41,7 @@ class AuthServiceImplTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-<<<<<<< Updated upstream
-    private DeveloperClient developerClient; // Aggiunto mock per il Feign Client
-=======
     private DeveloperClient developerClient;
->>>>>>> Stashed changes
 
     @InjectMocks
     private AuthServiceImpl authService;
@@ -61,16 +55,9 @@ class AuthServiceImplTest {
 
         String result = authService.register(request);
 
-<<<<<<< Updated upstream
-        // Verifica che il messaggio di ritorno corrisponda alla nuova implementazione
-        assertEquals("Utente registrato e sincronizzato con successo", result);
-        verify(repository).save(any(UserCredential.class));
-        verify(developerClient).syncDeveloper(any()); // Verifica che il sync sia stato chiamato
-=======
         assertEquals("Utente registrato e sincronizzato con successo", result);
         verify(repository).save(any(UserCredential.class));
         verify(developerClient).syncDeveloper(any());
->>>>>>> Stashed changes
     }
 
     @Test
@@ -89,17 +76,6 @@ class AuthServiceImplTest {
         AuthRequest request = new AuthRequest(null, "test@example.com", "password123");
         Authentication authentication = mock(Authentication.class);
 
-<<<<<<< Updated upstream
-        // Simula l'utente estratto dal database per recuperare il ruolo
-        UserCredential user = new UserCredential();
-        user.setEmail("test@example.com");
-        user.setRole(Role.DEVELOPER);
-
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
-        when(authentication.isAuthenticated()).thenReturn(true);
-        when(repository.findByEmail(request.email())).thenReturn(Optional.of(user)); // Mock del recupero utente
-        when(jwtUtil.generateToken(request.email(), "DEVELOPER")).thenReturn("mocked-jwt-token"); // Aggiunto il parametro Ruolo
-=======
         UserCredential user = mock(UserCredential.class);
         when(user.getId()).thenReturn(1L);
         when(user.getEmail()).thenReturn("test@example.com");
@@ -109,7 +85,6 @@ class AuthServiceImplTest {
         when(repository.findByEmail(request.email())).thenReturn(Optional.of(user));
 
         when(jwtUtil.generateToken(anyString(), any(), anyLong())).thenReturn("mocked-jwt-token");
->>>>>>> Stashed changes
 
         AuthResponse response = authService.login(request);
 
