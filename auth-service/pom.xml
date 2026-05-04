@@ -47,10 +47,17 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Aggiunta per comunicazione Feign verso developer-collection-service -->
+        <!-- Comunicazione Feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+        <!-- Logging Strutturato JSON -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.4</version>
         </dependency>
 
         <dependency>
@@ -89,7 +96,6 @@
         </dependency>
     </dependencies>
 
-    <!-- Aggiunta per la gestione delle dipendenze di Spring Cloud -->
     <dependencyManagement>
         <dependencies>
             <dependency>

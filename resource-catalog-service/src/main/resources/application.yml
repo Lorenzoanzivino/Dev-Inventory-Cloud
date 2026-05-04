@@ -1,24 +1,25 @@
 server:
-  port: 8080
+  port: 8083
 
 spring:
   application:
     name: resource-catalog-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:default}
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${RESOURCE_DATASOURCE_URL:jdbc:postgresql://localhost:5432/resource_db}
+    username: ${RESOURCE_DATASOURCE_USERNAME:user}
+    password: ${RESOURCE_DATASOURCE_PASSWORD:pass}
   jpa:
     hibernate:
-      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
-    show-sql: ${SPRING_JPA_SHOW_SQL}
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
     properties:
       hibernate:
-        format_sql: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 springdoc:
   openapi:
     servers:
-      - url: ${API_GATEWAY_URL}
+      - url: ${API_GATEWAY_URL:http://localhost:8080}
         description: "API Gateway"
