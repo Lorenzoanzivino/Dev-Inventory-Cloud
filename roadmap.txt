@@ -1,0 +1,104 @@
+1. Documentazione del Progetto
+
+Sì, la documentazione è un requisito architetturale obbligatorio per i sistemi a microservizi.
+
+1.1. Come si fa e dove si carica
+
+    Documentazione API (Codice): Utilizza Springdoc OpenAPI (Swagger). Si implementa aggiungendo la dipendenza nei file pom.xml dei microservizi e utilizzando le annotazioni @Tag e @Operation sui Controller. Viene generata automaticamente ed esposta solitamente all'endpoint /swagger-ui.html di ogni servizio (o centralizzata sul Gateway).
+
+    Documentazione Architetturale e di Dominio: Si crea una cartella /docs nella root del repository GitHub (o si utilizza la GitHub Wiki). Deve contenere i diagrammi architetturali, lo schema relazionale dei database, i flussi di autenticazione e le logiche di Multi-Tenancy.
+
+2. README.md per i Microservizi
+
+Sì. Ogni microservizio è un'entità indipendente e richiede un proprio README.md situato nella root della sua cartella (es. auth-service/README.md).
+
+Contenuto obbligatorio per ogni microservizio:
+
+    Porta di esecuzione locale.
+
+    Requisiti di ambiente (variabili d'ambiente necessarie).
+
+    Configurazione del database locale associato.
+
+    Comando Maven per la build isolata.
+
+    Responsabilità di dominio (cosa fa il servizio).
+
+3. ROADMAP: Dev-Inventory-Cloud
+Completato (Dall'inizio ad oggi)
+
+    Fase 1: Inizializzazione e DevOps Base
+
+        Creazione repository GitHub e adozione del Git Flow (main, develop, feature branches).
+
+        Definizione del docker-compose.yml per l'infrastruttura (reti, container, database isolati per servizio).
+
+    Fase 2: Sviluppo Backend Base (Clean Architecture)
+
+        Setup Spring Cloud Gateway (routing porta 80).
+
+        Sviluppo auth-service (registrazione, login, JWT).
+
+        Sviluppo resource-catalog-service (entità Progetti, Categorie, Risorse).
+
+        Sviluppo developer-collection-service (profili e assegnazioni).
+
+        Separazione netta tra Controller, Service, Repository. Utilizzo di DTO per lo scambio dati esterno.
+
+    Fase 3: Sicurezza e Comunicazione Inter-Service
+
+        Implementazione filtri JWT sul Gateway.
+
+        Configurazione RBAC (ADMIN vs DEVELOPER) tramite Spring Security.
+
+        Implementazione OpenFeign per la sincronizzazione asincrona dei dati utente tra auth-service e developer-collection-service.
+
+    Fase 4: Setup Frontend (React + Refine)
+
+        Inizializzazione progetto Vite/React.
+
+        Integrazione Refine.dev con Ant Design.
+
+        Sviluppo dell'Auth Provider personalizzato per la gestione dei JWT.
+
+    Fase 5: Sviluppo Multi-Tenancy (Frontend)
+
+        Creazione del ProjectContext per la selezione globale del progetto.
+
+        Sviluppo della componente Header per il cambio dinamico del progetto.
+
+    Fase 6: Filtri Liste CRUD
+
+        Applicazione di permanentFilter basati su projectId nelle tabelle di Risorse e Categorie.
+
+    Fase 7: Sviluppo Form (Create/Edit)
+
+        Iniezione automatica del projectId nei payload JSON inviati tramite i form Ant Design.
+
+    Fase 8: Persistenza dello Stato
+
+        Integrazione del localStorage nel Context per mantenere la selezione del progetto ai refresh della pagina.
+
+    Fase 9: RBAC User Interface
+
+        Integrazione useGetIdentity per mascherare elementi UI (tasti Create, Edit, Delete, form di creazione) agli utenti con ruolo DEVELOPER.
+
+    Fase 10: Testing E2E e Consolidamento Container
+
+        Allineamento finale delle interfacce Service e DTO (UserResponse).
+
+        Build complete delle immagini Docker.
+
+        Validazione dei flussi di assegnazione progetto e dei blocchi di sicurezza (403 Forbidden per Developer).
+
+Da Completare (Cosa Manca)
+
+    Documentazione API: Integrazione Swagger/OpenAPI su tutti i microservizi.
+
+    Testing Automatizzato: Implementazione di Unit Test (JUnit 5, Mockito) e Integration Test (Testcontainers) nei servizi Spring Boot.
+
+    Gestione Log e Monitoraggio: Sostituzione dei log standard con logging strutturato centralizzato (es. ELK stack o Grafana/Loki).
+
+    CI/CD Pipeline: Creazione di workflow GitHub Actions per la build automatica, l'esecuzione dei test e la pubblicazione delle immagini Docker su un registry.
+
+    Cloud Deployment (Target Finale): Configurazione e deploy su ambiente Cloud (VPS, AWS ECS, o Kubernetes) utilizzando variabili d'ambiente di produzione iniettate in Docker Compose o Helm.
