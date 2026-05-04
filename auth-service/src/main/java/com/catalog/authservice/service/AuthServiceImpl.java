@@ -78,11 +78,8 @@ public class AuthServiceImpl implements AuthService {
         UserCredential user = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Utente non trovato"));
 
-        return new UserResponse(
-                user.getId(),
-                user.getEmail(),
-                user.getRole().name()
-        );
+        // Assicurati che l'ordine sia: id, nome, email
+        return new UserResponse(user.getId(), user.getNome(), user.getEmail());
     }
 
     @Override
