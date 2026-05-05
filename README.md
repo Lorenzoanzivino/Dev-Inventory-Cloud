@@ -7,13 +7,13 @@
 ## 🎯 Panoramica del Progetto
 
 ### Cos'è?
-Dev-Inventory-Cloud è una piattaforma B2B cloud-native basata su un'architettura a microservizi (Spring Boot) e un'interfaccia frontend moderna (React + Refine.dev). È l'evoluzione scalabile di un precedente sistema monolitico, riprogettata per garantire isolamento dei dati, sicurezza avanzata e alta manutenibilità.
+Dev-Inventory-Cloud è una piattaforma cloud-native basata su un'architettura a microservizi (Spring Boot). È progettata per garantire l'isolamento dei dati, sicurezza avanzata e alta manutenibilità attraverso il pattern Database-per-Service.
 
 ### Cosa fa?
-Il sistema centralizza e indicizza le risorse software (librerie, tool, link a documentazioni, credenziali architetturali) categorizzandole in base a **Progetti** specifici. Gestisce l'autenticazione degli utenti, l'assegnazione degli sviluppatori ai vari progetti e orchestra le comunicazioni sicure tra i vari moduli del sistema tramite un API Gateway.
+Il sistema centralizza e indicizza le risorse software (librerie, tool, link a documentazioni) categorizzandole in base a specifici progetti. Gestisce l'autenticazione degli utenti, i profili degli sviluppatori, e orchestra le comunicazioni sicure tra i vari moduli del sistema tramite un API Gateway.
 
 ### A cosa serve?
-Serve a risolvere il problema della dispersione delle informazioni nei team di sviluppo. Permette ai Tech Lead (ADMIN) di orchestrare gli strumenti di lavoro assegnandoli a specifici progetti, e agli Sviluppatori (DEVELOPER) di avere una dashboard pulita e filtrata contenente solo le categorie e le risorse necessarie ai progetti a cui stanno effettivamente lavorando, accelerando l'onboarding e riducendo il rumore di fondo.
+Permette ai Tech Lead (ADMIN) di orchestrare gli strumenti di lavoro e assegnare i developer ai vari progetti. Aiuta gli sviluppatori ad avere una dashboard organizzata contenente solo le categorie e le risorse necessarie ai progetti a cui lavorano, accelerando l'onboarding.
 
 ---
 
@@ -24,54 +24,42 @@ Serve a risolvere il problema della dispersione delle informazioni nei team di s
 - [Design Pattern e Scelte Tecniche](#-design-pattern-e-scelte-tecniche)
 - [Workflow Git](#-workflow-git)
 - [Setup & Esecuzione](#-setup--esecuzione)
-- [Struttura API & Endpoints](#-struttura-api--endpoints)
+- [Documentazione Microservizi](#-documentazione-microservizi)
 
 ---
 
 ## 🏗️ Architettura del Sistema
-Il sistema è basato su un'architettura a microservizi distribuita per il backend, orchestrata tramite Docker, integrata con una Single Page Application (SPA) frontend.
+L'ecosistema è composto da un API Gateway e tre microservizi di backend indipendenti, ognuno con il proprio database PostgreSQL isolato.
 
-1.  **Frontend SPA (React/Refine)** - Porta: `5173`
-    *   Pannello di amministrazione B2B per la gestione di risorse e categorie.
-    *   Interfaccia reattiva con Ant Design e Tailwind CSS.
-    *   Gestione Multi-Tenant dinamica via API Gateway.
-2.  **API Gateway (Spring Cloud Gateway)** - Porta: `80`
-    *   Punto d'accesso unico per il frontend con routing dinamico.
-    *   Implementa filtri di sicurezza globali per la validazione dei token JWT e la gestione dei CORS.
-3.  **Auth Service** - Porta interna: `8082`
-    *   Gestisce registrazione, login, generazione JWT (HMAC SHA-256) e gestione del profilo (es. update password/nome).
-    *   Supporta l'integrazione Role-Based Access Control (RBAC).
-    *   Database: **PostgreSQL (`auth-db`)**.
-4.  **Resource Catalog Service** - Porta interna: `8080`
-    *   Gestisce il dominio delle risorse, delle categorie e dei progetti (Multi-Tenancy).
-    *   Database: **PostgreSQL (`catalog-db`)**.
-5.  **Developer Collection Service** - Porta interna: `8081`
-    *   Gestisce i profili degli sviluppatori e le assegnazioni ai progetti.
-    *   Comunica asincronamente con Auth Service e Catalog Service tramite **OpenFeign**.
-    *   Database: **PostgreSQL (`developer-db`)**.
+1.  **API Gateway (Spring Cloud Gateway)** - Porta: `8080` (esposta come `80`)
+    *   Punto d'accesso unico con routing dinamico.
+    *   Implementa filtri di sicurezza per la validazione dei token JWT.
+2.  **Auth Service** - Porta: `8082`
+    *   Gestisce registrazione, login e validazione credenziali.
+    *   Genera token JWT (HMAC SHA-256) per l'accesso sicuro.
+    *   Database: **PostgreSQL (`auth_db`)**.
+3.  **Developer Collection Service** - Porta: `8081`
+    *   Gestisce i profili degli sviluppatori e le collezioni/assegnazioni ai progetti.
+    *   Database: **PostgreSQL (`developer_collection_db`)**.
+4.  **Resource Catalog Service** - Porta: `8083`
+    *   Gestisce il dominio delle risorse, delle categorie e dei progetti.
+    *   Database: **PostgreSQL (`resource_catalog_db`)**.
 
 ---
 
 ## 🛠️ Tech Stack & Tools
 
-**Frontend**
-- **React** (Component-based UI)
-- **Refine.dev** (Headless B2B framework)
-- **Ant Design** (Component Library)
-- **Vite** (Build Tool)
-
 **Backend Core**
-- **Java 17** & **Spring Boot 3.2.x**
-- **Spring Cloud Gateway** (API Management & Security)
-- **Spring Security** (Authentication & RBAC)
-- **Spring Data JPA** & **Hibernate** (Persistenza)
-- **MapStruct** & **Lombok** (Boilerplate reduction)
+- **Java 17** & **Spring Boot 3.2.5**
+- **Spring Cloud Gateway** (API Management)
+- **Spring Security** (Authentication & JWT)
+- **Spring Data JPA** & **Hibernate** (Code-First)
 - **OpenFeign** (Comunicazione Inter-service sincrona)
 
 **DevOps & Infrastruttura**
 - **Docker** & **Docker Compose** (Containerizzazione)
-- **PostgreSQL 17** (DBMS relazionale multiplo)
-- **Maven** (Backend Build Tool)
+- **PostgreSQL 17** (DBMS relazionale)
+- **GitHub Actions** (CI/CD Pipeline)
 
 ---
 
@@ -95,74 +83,64 @@ La creazione o l'aggiornamento di un utente scatena chiamate sicure (via Feign C
 
 ## 🧩 Design Pattern e Scelte Tecniche
 
-- **Stateless Architecture:** Tutti i microservizi sono progettati per essere stateless; il contesto di sicurezza è demandato interamente ai token JWT (passati dal Gateway).
-- **Global Exception Handling:** Gestione centralizzata degli errori tramite `@RestControllerAdvice` con risposte standardizzate.
-- **Data Transfer Objects (DTO):** Utilizzo esclusivo di Java Records e DTO per comunicazioni intra e inter-servizio, disaccoppiando le entità di dominio dall'esposizione REST.
-- **Frontend Context API:** Utilizzo del Context di React per gestire dinamicamente lo stato globale del Multi-Tenancy iniettando il Project ID in ogni query e mutazione REST.
+- **Database-per-Service:** Ogni microservizio ha un proprio container PostgreSQL isolato, garantendo il disaccoppiamento totale dei dati.
+- **Code-First (Hibernate):** Utilizzo della proprietà `ddl-auto=update` per generare lo schema del database direttamente dalle `@Entity` Java.
+- **CQRS Logico:** Separazione tra Command Service (scrittura) e Query Service (lettura) all'interno dei microservizi.
+- **Stateless Services:** Nessuna sessione in memoria. La sicurezza e l'identità sono interamente gestite tramite token JWT passati dall'API Gateway.
+- **Data Transfer Objects (DTO):** Utilizzati ai confini dell'applicazione per disaccoppiare la logica interna dalle API esposte al client.
 
 ---
 
-## 🔄 Workflow Git
-Viene seguito un protocollo rigoroso per garantire la stabilità:
-1. Sviluppo esclusivo in feature branch: `feature/nome-task`.
-2. Commit atomici, strutturati e descrittivi.
-3. Pull Request verso `develop` al termine della task.
-4. Nessun commit diretto consentito su `develop` o `main`.
-5. Promozione da `develop` a `main` solo a seguito di Integration Test E2E superati.
+## 🔄 Workflow Git (MANDATORY SEQUENCE)
+Viene seguito un protocollo rigoroso per lo sviluppo:
+1. Creazione Feature Branch per ogni task (`feature/nome-task`).
+2. Sviluppo e commit atomici.
+3. Push sul remote branch.
+4. Creazione Pull Request verso `develop`.
+5. Verifica superamento pipeline (GitHub Actions).
+6. Merge ed eliminazione del branch.
+   **Vietati i commit diretti su `main` o `develop`.**
 
 ---
 
 ## 🚀 Setup & Esecuzione
 
-Prerequisiti: **Docker** e **Docker Compose** installati nel sistema.
+Prerequisiti: **Docker** e **Docker Compose**.
 
-1.  **Clonare la repository:**
-    ```bash
-    git clone [https://github.com/Lorenzoanzivino/Dev-Inventory-Cloud.git](https://github.com/Lorenzoanzivino/Dev-Inventory-Cloud.git)
-    cd Dev-Inventory-Cloud
-    ```
+### 1. File di Configurazione (`.env`)
+Il progetto utilizza variabili d'ambiente per proteggere le credenziali. Prima di avviare l'ecosistema, crea un file `.env` nella directory root del progetto con il seguente contenuto:
 
-2.  **Avviare l'ecosistema:**
-    ```bash
-    docker compose up -d --build
-    ```
+```env
+DB_USERNAME=admin
+DB_PASSWORD=secretpassword
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+SPRING_JPA_SHOW_SQL=true
+JWT_SECRET=super_secret_key_for_jwt_generation_must_be_long
+JWT_EXPIRATION=3600000
+API_GATEWAY_URL=http://api-gateway:8080
+```
 
-3.  **Promozione ad ADMIN (Primo Avvio):**
-    Di default, ogni nuovo utente registrato ottiene il ruolo `DEVELOPER`. Per sbloccare la creazione dei progetti e gestire il sistema, è necessario promuovere il primo utente ad `ADMIN` direttamente nel database.
-    *   Registra un utente tramite l'endpoint `/register` o dal Frontend.
-    *   Accedi al database `auth-db` (es. tramite DBeaver su `localhost:5434`).
-    *   Esegui la query:
-        ```sql
-        UPDATE user_credentials SET role = 'ADMIN' WHERE email = 'tua@email.com';
-        ```
-    *   Effettua nuovamente il login per ottenere il JWT aggiornato con i nuovi permessi.
+### 2. Avvio dell'Ecosistema
+Esegui i seguenti comandi dalla root del progetto:
 
-4.  **Accesso:**
-    - **Frontend App:** `http://localhost:5173`
-    - **API Gateway (Backend):** `http://localhost`
+```bash
+docker compose up -d --build
+```
+
+Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e avvierà l'intera infrastruttura.
 
 ---
 
-## 📑 Struttura API & Endpoints
+## 📖 Documentazione Microservizi
+Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di ogni singolo modulo, consulta i README specifici:
 
-Tutte le API transitano attraverso l'API Gateway sulla porta `80` e sono protette da JWT (header `Authorization: Bearer <token>`).
+    [API Gateway](./api-gateway/)
 
-### Auth Service (`/api/v1/auth`)
-*   `POST /register` - Registrazione nuovo utente (Default: DEVELOPER)
-*   `POST /login` - Autenticazione e rilascio JWT
-*   `GET /me` - Recupero informazioni profilo personale e ruolo
-*   `PUT /me` (o `/update`) - Aggiornamento dei dati utente (nome, password)
+    [Auth Service](./auth-service/)
 
-### Catalog Service (`/api/v1`)
-*   `GET /projects` - Lista progetti (filtrati per Developer se non ADMIN)
-*   `POST /projects` - Crea un progetto (Richiede ADMIN)
-*   `GET /categories` - Recupera le categorie (filtrabili per `projectId`)
-*   `GET /resources` - Recupera le risorse (filtrabili per `projectId` e interrelazionate alle categorie)
+    [Developer Collection Service](./developer-collection-service/)
 
-### Developer Service (`/api/v1`)
-*   `GET /developers` - Lista sviluppatori registrati
-*   `GET /assignments/developer/{id}` - Recupera i progetti assegnati a uno sviluppatore specifico
-*   `POST /assignments` - Assegna uno sviluppatore a un progetto (Richiede ADMIN)
+    [Resource Catalog Service](./resource-catalog-service/)
 
 ---
 
