@@ -9,4 +9,5 @@ public record CollectionItemResponse(
         Long resourceId,
         String resourceName, // Nome della risorsa recuperato dal catalogo
         String developerName // Nome dello sviluppatore proprietario
-) {}
+) {
+}

@@ -32,7 +32,7 @@ public class ProjectCommandService {
 
     public void deleteProject(Long id) {
         if (!projectRepository.existsById(id)) {
-            throw new RuntimeException("Progetto non trovato");
+            throw new IllegalStateException("Progetto non trovato");
         }
         projectRepository.deleteById(id);
     }

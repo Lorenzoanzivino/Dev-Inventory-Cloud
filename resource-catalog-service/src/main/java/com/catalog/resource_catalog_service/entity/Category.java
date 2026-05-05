@@ -2,6 +2,7 @@ package com.catalog.resource_catalog_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.util.List;
 
 @Entity

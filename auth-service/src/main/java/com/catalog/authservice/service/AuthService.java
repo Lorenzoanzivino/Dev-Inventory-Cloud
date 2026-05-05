@@ -6,7 +6,10 @@ import com.catalog.authservice.dto.UserResponse;
 
 public interface AuthService {
     String register(AuthRequest request);
+
     UserResponse getMe(String email);
+
     void updateMe(String currentEmail, AuthRequest updateData);
+
     AuthResponse login(AuthRequest request);
 }

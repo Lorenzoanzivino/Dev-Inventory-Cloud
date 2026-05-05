@@ -24,7 +24,7 @@ public class CollectionCommandService {
                 .orElseThrow(() -> new RuntimeException("Sviluppatore non trovato."));
 
         if (collectionRepository.existsByDeveloperIdAndResourceId(request.developerId(), request.resourceId())) {
-            throw new RuntimeException("Risorsa già presente nella collezione.");
+            throw new IllegalStateException("Risorsa già presente nella collezione.");
         }
 
         resourceClient.getResourceById(request.resourceId());
@@ -39,7 +39,7 @@ public class CollectionCommandService {
 
     public void deleteById(Long id) {
         if (!collectionRepository.existsById(id)) {
-            throw new RuntimeException("Item della collezione non trovato.");
+            throw new IllegalStateException("Item della collezione non trovato.");
         }
         collectionRepository.deleteById(id);
     }

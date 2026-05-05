@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ProjectAssignmentRepository extends JpaRepository<ProjectAssignment, Long> {
     List<ProjectAssignment> findByDeveloperId(Long developerId);
+
     Optional<ProjectAssignment> findByDeveloperIdAndProjectId(Long developerId, Long projectId);
 }

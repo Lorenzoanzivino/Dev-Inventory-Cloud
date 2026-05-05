@@ -48,7 +48,7 @@ public class ResourceCommandService {
 
     public void deleteResource(Long id) {
         if (!resourceRepository.existsById(id)) {
-            throw new RuntimeException("Risorsa non trovata");
+            throw new IllegalStateException("Risorsa non trovata");
         }
         resourceRepository.deleteById(id);
     }

@@ -12,4 +12,5 @@ public record AuthRequest(
 
         @NotBlank(message = "La password è obbligatoria")
         String password
-) {}
+) {
+}

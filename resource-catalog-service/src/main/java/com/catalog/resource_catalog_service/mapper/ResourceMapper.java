@@ -11,7 +11,8 @@ import org.mapstruct.MappingConstants;
 public interface ResourceMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "category", ignore = true) // La categoria verrà settata manualmente nel Service dopo la ricerca a DB
+    @Mapping(target = "category", ignore = true)
+    // La categoria verrà settata manualmente nel Service dopo la ricerca a DB
     @Mapping(target = "dataInserimento", ignore = true)
     Resource toEntity(ResourceRequest request);
 

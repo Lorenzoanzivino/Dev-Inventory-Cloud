@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface CollectionItemRepository extends JpaRepository<CollectionItem, Long> {
     List<CollectionItem> findByDeveloperId(Long developerId);
+
     boolean existsByDeveloperIdAndResourceId(Long developerId, Long resourceId);
+
     void deleteByDeveloperIdAndResourceId(Long developerId, Long resourceId);
 }

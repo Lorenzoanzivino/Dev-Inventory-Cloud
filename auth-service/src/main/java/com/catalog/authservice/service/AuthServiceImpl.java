@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     public String register(AuthRequest request) {
         Optional<UserCredential> existingUser = repository.findByEmail(request.email());
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Utente già registrato con questa email");
+            throw new IllegalStateException("Utente già registrato con questa email");
         }
 
         UserCredential user = new UserCredential();
@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtUtil.generateToken(request.email(), user.getRole().name(), user.getId());
             return new AuthResponse(token);
         } else {
-            throw new RuntimeException("Accesso negato: credenziali non valide");
+            throw new IllegalStateException("Accesso negato: credenziali non valide");
         }
     }
 

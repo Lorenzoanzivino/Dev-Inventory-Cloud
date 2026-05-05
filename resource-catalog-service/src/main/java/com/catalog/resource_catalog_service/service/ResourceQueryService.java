@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class ResourceQueryService {
     public List<ResourceResponse> getAllResources() {
         return resourceRepository.findAll().stream()
                 .map(resourceMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ResourceResponse getResourceById(Long id) {
