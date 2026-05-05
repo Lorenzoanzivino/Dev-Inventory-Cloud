@@ -5,4 +5,5 @@ public record ProjectAssignmentResponse(
         Long developerId,
         Long projectId,
         String dataAssegnazione
-) {}
+) {
+}

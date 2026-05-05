@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class CollectionQueryService {
                 // Fallback in caso di microservizio catalogo offline
                 return new CollectionItemResponse(item.getId(), item.getResourceId(), "N/D (Errore Catalogo)", devName);
             }
-        }).collect(Collectors.toList());
+        }).toList(); // <-- Sostituzione applicata qui
     }
 
     public DeveloperCollectionResponse getDeveloperCollection(Long developerId) {
@@ -64,7 +63,7 @@ public class CollectionQueryService {
             } catch (Exception e) {
                 return new CollectionItemResponse(item.getId(), item.getResourceId(), "Risorsa non disponibile", developer.getNome());
             }
-        }).collect(Collectors.toList());
+        }).toList();
 
         return new DeveloperCollectionResponse(developer.getId(), developer.getNome(), itemResponses);
     }

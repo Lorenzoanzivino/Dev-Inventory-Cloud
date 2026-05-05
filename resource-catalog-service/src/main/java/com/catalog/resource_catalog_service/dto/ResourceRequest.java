@@ -10,4 +10,5 @@ public record ResourceRequest(
         String url, // Rimosso @NotBlank: ora è opzionale
         @NotNull(message = "L'ID della categoria è obbligatorio")
         Long categoryId
-) {}
+) {
+}

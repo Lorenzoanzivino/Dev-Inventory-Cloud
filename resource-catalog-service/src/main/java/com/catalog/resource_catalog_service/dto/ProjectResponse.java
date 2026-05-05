@@ -4,4 +4,5 @@ public record ProjectResponse(
         Long id,
         String nome,
         String descrizione
-) {}
+) {
+}

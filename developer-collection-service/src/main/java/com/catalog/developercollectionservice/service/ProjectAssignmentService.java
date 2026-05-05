@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class ProjectAssignmentService {
                 .orElseThrow(() -> new RuntimeException("Sviluppatore non trovato con ID: " + request.developerId()));
 
         if (assignmentRepository.findByDeveloperIdAndProjectId(request.developerId(), request.projectId()).isPresent()) {
-            throw new RuntimeException("Il progetto è già stato assegnato a questo sviluppatore");
+            throw new IllegalStateException("Il progetto è già stato assegnato a questo sviluppatore");
         }
 
         ProjectAssignment assignment = ProjectAssignment.builder()
@@ -46,7 +45,7 @@ public class ProjectAssignmentService {
                         assignment.getProjectId(),
                         assignment.getDataAssegnazione().toString()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void unassignProject(Long developerId, Long projectId) {

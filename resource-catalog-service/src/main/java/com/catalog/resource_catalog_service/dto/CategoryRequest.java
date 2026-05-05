@@ -8,4 +8,5 @@ public record CategoryRequest(
         String nome,
         @NotNull(message = "L'ID del progetto è obbligatorio")
         Long projectId // Ogni categoria deve nascere dentro un progetto
-) {}
+) {
+}

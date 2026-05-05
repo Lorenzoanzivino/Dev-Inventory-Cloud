@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class ProjectQueryService {
     public List<ProjectResponse> getAllProjects() {
         return projectRepository.findAll().stream()
                 .map(projectMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ProjectResponse getProjectById(Long id) {

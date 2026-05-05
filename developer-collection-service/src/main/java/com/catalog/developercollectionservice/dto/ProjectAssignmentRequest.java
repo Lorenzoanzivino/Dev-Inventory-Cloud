@@ -7,4 +7,5 @@ public record ProjectAssignmentRequest(
         Long developerId,
         @NotNull(message = "L'ID del progetto è obbligatorio")
         Long projectId
-) {}
+) {
+}

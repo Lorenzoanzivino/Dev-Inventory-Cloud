@@ -10,4 +10,5 @@ public record DeveloperRequest(
         @Email(message = "Email non valida")
         @NotBlank(message = "L'email è obbligatoria")
         String email
-) {}
+) {
+}

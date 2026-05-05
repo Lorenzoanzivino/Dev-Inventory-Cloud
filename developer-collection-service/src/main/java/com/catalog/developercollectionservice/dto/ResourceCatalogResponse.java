@@ -4,4 +4,5 @@ public record ResourceCatalogResponse(
         Long id,
         String nome,
         String url
-) {}
+) {
+}

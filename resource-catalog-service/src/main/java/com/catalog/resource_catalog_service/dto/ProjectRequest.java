@@ -6,4 +6,5 @@ public record ProjectRequest(
         @NotBlank(message = "Il nome del progetto è obbligatorio")
         String nome,
         String descrizione
-) {}
+) {
+}

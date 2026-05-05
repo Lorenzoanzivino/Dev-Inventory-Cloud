@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     // Utile per evitare duplicati durante la creazione
     Optional<Category> findByNome(String nome);
+
     List<Category> findByProjectId(Long projectId);
 }

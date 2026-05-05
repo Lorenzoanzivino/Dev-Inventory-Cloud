@@ -45,7 +45,7 @@ public class CategoryCommandService {
 
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
-            throw new RuntimeException("Categoria non trovata");
+            throw new IllegalStateException("Categoria non trovata");
         }
         categoryRepository.deleteById(id);
     }

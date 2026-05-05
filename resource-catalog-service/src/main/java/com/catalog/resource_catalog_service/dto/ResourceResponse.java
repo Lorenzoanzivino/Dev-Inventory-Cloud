@@ -9,4 +9,5 @@ public record ResourceResponse(
         String url,
         CategoryResponse category, // Restituiamo i dettagli della categoria
         LocalDateTime dataInserimento
-) {}
+) {
+}
