@@ -134,13 +134,13 @@ Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e a
 ## 📖 Documentazione Microservizi
 Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di ogni singolo modulo, consulta i README specifici:
 
-    [API Gateway](./api-gateway/)
+[API Gateway](./api-gateway/)
 
-    [Auth Service](./auth-service/)
+[Auth Service](./auth-service/)
 
-    [Developer Collection Service](./developer-collection-service/)
+[Developer Collection Service](./developer-collection-service/)
 
-    [Resource Catalog Service](./resource-catalog-service/)
+[Resource Catalog Service](./resource-catalog-service/)
 
 ---
 
