@@ -37,4 +37,8 @@ Nella directory test-requests sono presenti i file .http per testare gli endpoin
 
 ---
 
+[Dev Inventory Cloud](../README.md)
+
+---
+
 **Ultimo aggiornamento:** Maggio 2026
