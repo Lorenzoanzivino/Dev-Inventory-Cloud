@@ -29,4 +29,8 @@ Avvio tramite Maven Wrapper dalla directory del microservizio:
 
 ---
 
+[Dev Inventory Cloud](./Dev-Inventory-Cloud/)
+
+---
+
 **Ultimo aggiornamento:** Maggio 2026
