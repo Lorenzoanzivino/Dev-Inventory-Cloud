@@ -29,7 +29,7 @@ Avvio tramite Maven Wrapper dalla directory del microservizio:
 
 ---
 
-[Dev Inventory Cloud](./Dev-Inventory-Cloud/)
+[Dev Inventory Cloud](../)
 
 ---
 
