@@ -5,26 +5,26 @@ POST http://localhost/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "nome": "Lorenzo",
-  "email": "lorenzoanzivino1997@gmail.com",
-  "password": "password123"
+  "nome": "Lorenzo Admin",
+  "email": "admin@example.com",
+  "password": "test-password-123"
 }
 
-### >>> FERMATI QUI: Esegui il Passaggio 2 nel terminale prima di procedere <<<
+### >>> FERMATI QUI: Esegui il Passaggio 2 nel terminale per promuovere a ADMIN prima di procedere <<<
 
-### 2. Login di Lorenzo (Prendi il JWT e sostituiscilo in TOKEN_ADMIN nei test successivi)
+### 2. Login di Lorenzo (Prendi il JWT e salvalo come variabile TOKEN_ADMIN nel tuo IDE)
 POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "lorenzoanzivino1997@gmail.com",
-  "password": "password123"
+  "email": "admin@example.com",
+  "password": "test-password-123"
 }
 
 ### 3. [ADMIN] Crea un Progetto (ID previsto: 1)
 POST http://localhost/api/v1/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
 
 {
   "nome": "MyTrainUp",
@@ -34,7 +34,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsI
 ### 4. [ADMIN] Crea una Categoria nel Progetto 1 (ID previsto: 1)
 POST http://localhost/api/v1/categories
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
 
 {
   "nome": "Backend Services",
@@ -44,7 +44,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsI
 ### 5. [ADMIN] Crea una Risorsa nella Categoria 1 (Senza URL)
 POST http://localhost/api/v1/resources
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
 
 {
   "nome": "Database Credentials",
@@ -61,23 +61,23 @@ Content-Type: application/json
 
 {
   "nome": "Luca Developer",
-  "email": "luca.dev@onyx.com",
-  "password": "password123"
+  "email": "luca.dev@example.com",
+  "password": "test-password-123"
 }
 
-### 7. Login di Luca (Prendi il JWT e sostituiscilo in TOKEN_LUCA nei test successivi)
+### 7. Login di Luca (Prendi il JWT e salvalo come variabile TOKEN_LUCA nel tuo IDE)
 POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "luca.dev@onyx.com",
-  "password": "password123"
+  "email": "luca.dev@example.com",
+  "password": "test-password-123"
 }
 
 ### 8. [TEST SICUREZZA 403] Luca prova a creare un Progetto
 POST http://localhost/api/v1/projects
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwidXNlcklkIjoyLCJzdWIiOiJsdWNhLmRldkBvbnl4LmNvbSIsImlhdCI6MTc3Nzg5NDczNSwiZXhwIjoxNzc3ODk2NTM1fQ.YPSHqWSMqSUTAe2vhg3jAEgxShozvUvxEHX1RIv4zUc
+Authorization: Bearer {{TOKEN_LUCA}}
 
 {
   "nome": "Hacker Project",
@@ -86,14 +86,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwidXNlcklkI
 
 ### 9. [VERIFICA SINCRONIZZAZIONE] Lista Developers
 GET http://localhost/api/v1/developers
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiREVWRUxPUEVSIiwidXNlcklkIjoyLCJzdWIiOiJsdWNhLmRldkBvbnl4LmNvbSIsImlhdCI6MTc3Nzg5NDczNSwiZXhwIjoxNzc3ODk2NTM1fQ.YPSHqWSMqSUTAe2vhg3jAEgxShozvUvxEHX1RIv4zUc
+Authorization: Bearer {{TOKEN_LUCA}}
 
 ### --- FASE 3: TEST ASSEGNAZIONE PROGETTO ---
 
 ### 10. [ADMIN] Assegna il Progetto 1 a Luca (Developer ID: 2)
 POST http://localhost/api/v1/assignments
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
 
 {
   "developerId": 2,
@@ -102,8 +102,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsI
 
 ### 11. [ADMIN/DEVELOPER] Verifica le assegnazioni di Luca
 GET http://localhost/api/v1/assignments/developer/2
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
 
 ### 12. [ADMIN] Rimuovi l'assegnazione (Test opzionale)
 DELETE http://localhost/api/v1/assignments/developer/2/project/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJ1c2VySWQiOjEsInN1YiI6ImxvcmVuem9hbnppdmlubzE5OTdAZ21haWwuY29tIiwiaWF0IjoxNzc3ODk0Njk3LCJleHAiOjE3Nzc4OTY0OTd9.279eZo5s4I7y5OrEhjvnF37bh78VDYMQNyGYd0nhPis
+Authorization: Bearer {{TOKEN_ADMIN}}
