@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "nome": "Lorenzo",
-  "email": "lorenzo@example.com"
+  "email": "lorenzo@test.com"
 }
 
 ### 2. Recupero di tutti i Developer
@@ -17,5 +17,5 @@ Content-Type: application/json
 
 {
   "nome": "Clone",
-  "email": "lorenzo@example.com"
+  "email": "lorenzo@test.com"
 }
