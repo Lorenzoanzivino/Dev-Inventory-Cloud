@@ -2,7 +2,6 @@
 
 **Piattaforma Full-Stack e API a Microservizi per la gestione di risorse, tool e documentazione per team di sviluppo.**
 
----
 
 ## 🎯 Panoramica del Progetto
 
@@ -15,7 +14,6 @@ Il sistema centralizza e indicizza le risorse software (librerie, tool, link a d
 ### A cosa serve?
 Permette ai Tech Lead (ADMIN) di orchestrare gli strumenti di lavoro e assegnare i developer ai vari progetti. Aiuta gli sviluppatori ad avere una dashboard organizzata contenente solo le categorie e le risorse necessarie ai progetti a cui lavorano, accelerando l'onboarding.
 
----
 
 ## 📑 Sommario
 - [Architettura del Sistema](#-architettura-del-sistema)
@@ -26,7 +24,6 @@ Permette ai Tech Lead (ADMIN) di orchestrare gli strumenti di lavoro e assegnare
 - [Setup & Esecuzione](#-setup--esecuzione)
 - [Documentazione Microservizi](#-documentazione-microservizi)
 
----
 
 ## 🏗️ Architettura del Sistema
 L'ecosistema è composto da un API Gateway e tre microservizi di backend indipendenti, ognuno con il proprio database PostgreSQL isolato.
@@ -45,7 +42,6 @@ L'ecosistema è composto da un API Gateway e tre microservizi di backend indipen
     *   Gestisce il dominio delle risorse, delle categorie e dei progetti.
     *   Database: **PostgreSQL (`resource_catalog_db`)**.
 
----
 
 ## 🛠️ Tech Stack & Tools
 
@@ -61,7 +57,6 @@ L'ecosistema è composto da un API Gateway e tre microservizi di backend indipen
 - **PostgreSQL 17** (DBMS relazionale)
 - **GitHub Actions** (CI/CD Pipeline)
 
----
 
 ## ✨ Funzionalità Principali
 
@@ -79,7 +74,6 @@ L'ecosistema supporta due ruoli principali:
 ### 3. Sincronizzazione Cross-Service
 La creazione o l'aggiornamento di un utente scatena chiamate sicure (via Feign Client) per mantenere allineati i database del servizio di Autenticazione e quello del Developer Collection Service, garantendo l'integrità referenziale distribuita.
 
----
 
 ## 🧩 Design Pattern e Scelte Tecniche
 
@@ -89,7 +83,6 @@ La creazione o l'aggiornamento di un utente scatena chiamate sicure (via Feign C
 - **Stateless Services:** Nessuna sessione in memoria. La sicurezza e l'identità sono interamente gestite tramite token JWT passati dall'API Gateway.
 - **Data Transfer Objects (DTO):** Utilizzati ai confini dell'applicazione per disaccoppiare la logica interna dalle API esposte al client.
 
----
 
 ## 🔄 Workflow Git (MANDATORY SEQUENCE)
 Viene seguito un protocollo rigoroso per lo sviluppo:
@@ -101,7 +94,6 @@ Viene seguito un protocollo rigoroso per lo sviluppo:
 6. Merge ed eliminazione del branch.
    **Vietati i commit diretti su `main` o `develop`.**
 
----
 
 ## 🚀 Setup & Esecuzione
 
@@ -129,7 +121,6 @@ docker compose up -d --build
 
 Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e avvierà l'intera infrastruttura.
 
----
 
 ## 📖 Documentazione Microservizi
 Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di ogni singolo modulo, consulta i README specifici:
@@ -141,7 +132,3 @@ Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di
 [Developer Collection Service](./developer-collection-service/)
 
 [Resource Catalog Service](./resource-catalog-service/)
-
----
-
-**Ultimo aggiornamento:** Maggio 2026

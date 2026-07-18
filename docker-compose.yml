@@ -131,6 +131,17 @@ services:
     networks:
       - backend-net
 
+  # --- FRONTEND ---
+  frontend-service:
+    build: ./frontend-service
+    container_name: frontend-service
+    ports:
+      - "3000:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - backend-net
+
 networks:
   backend-net:
     driver: bridge

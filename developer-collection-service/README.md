@@ -31,14 +31,7 @@ Avvio tramite Maven Wrapper:
 ./mvnw spring-boot:run
 ```
 
----
 
 Nella directory test-requests sono presenti i file .http per testare gli endpoint in modo isolato o tramite integrazione dell'ecosistema. I dati sensibili e i token JWT devono essere configurati come variabili d'ambiente nell'IDE.
 
----
-
 [Dev Inventory Cloud](../README.md)
-
----
-
-**Ultimo aggiornamento:** Maggio 2026

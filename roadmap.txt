@@ -1,0 +1,45 @@
+1. Git Cleanup e Branch Setup
+
+    Spostamento su develop e allineamento con il remote.
+    Rimozione dei branch locali obsoleti.
+    Esecuzione del pruning per rimuovere i riferimenti ai branch remoti già eliminati.
+    Creazione del nuovo branch di lavoro feature/docker-docs-refactoring.
+
+2. Refactoring Docker Compose
+
+    Modifica del file docker-compose.yml nella root.
+    Aggiunta della configurazione per il frontend-service (port mapping, dipendenze dall'API Gateway, definizione della build).
+
+3. Verifica e Fix dei Dockerfile (Multi-stage Build)
+
+    Analisi dei Dockerfile dei 4 microservizi backend.
+
+    Verifica (ed eventuale implementazione) del pattern multi-stage con Maven all'interno del container, per svincolare la build dalle cartelle target della macchina host.
+
+    Analisi del Dockerfile del frontend-service per garantire l'uso di Nginx o un web server ottimizzato per i file statici React.
+
+4. Cleanup Documentazione
+
+    Rimozione della stringa "Ultimo aggiornamento: Maggio 2026" dal README.md principale.
+
+    Rimozione della stessa stringa dai README.md dei singoli sottomoduli (api-gateway, auth-service, developer-collection-service, resource-catalog-service).
+
+5. Build e Testing Locale
+
+    Eliminazione preventiva delle cartelle target locali (se presenti) per forzare il test di compilazione pulita.
+
+    Esecuzione di docker compose up -d --build.
+
+    Verifica dello stato di salute dei container e test degli endpoint tramite i file .http presenti nella directory test-requests.
+
+6. Chiusura Workflow (MANDATORY SEQUENCE)
+
+    Commit atomici delle modifiche.
+
+    Push del branch feature/docker-docs-refactoring.
+
+    Apertura Pull Request verso develop.
+
+    Verifica superamento Action (se configurate) e Merge.
+
+    Eliminazione del branch di feature.
