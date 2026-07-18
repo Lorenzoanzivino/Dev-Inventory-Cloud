@@ -118,6 +118,16 @@ docker compose up -d --build
 
 Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e avvierà l'intera infrastruttura.
 
+
+### 3. Popolamento Dati Iniziali (Seeding) e Accesso UI
+Per creare automaticamente gli utenti di test nel database e assegnare i ruoli corretti, attendi circa 15 secondi l'avvio completo dei servizi e lancia lo script dedicato:
+
+```bash
+chmod +x seed.sh
+./seed.sh
+```
+Una volta terminato il seeding, l'interfaccia utente sarà accessibile dal browser all'indirizzo: http://localhost:3000
+
 ---
 
 ## 🧪 Credenziali per il Test delle Funzionalità
@@ -129,7 +139,7 @@ Per valutare le differenze di comportamento dell'interfaccia utente (UI Hiding e
     * **Password:** `test123`
 
 * **Account Sviluppatore (Privilegi limitati in sola lettura):**
-    * **Email:** `luca.dev@test.com`
+    * **Email:** `developer@test.com`
     * **Password:** `test123`
 
 ---

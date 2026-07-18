@@ -1,6 +1,13 @@
+export interface IProject {
+    id: number;
+    nome: string;
+    descrizione: string;
+}
+
 export interface ICategory {
     id: number;
     nome: string;
+    projectId?: number;
 }
 
 export interface IResource {
