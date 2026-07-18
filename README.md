@@ -120,6 +120,20 @@ Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e a
 
 ---
 
+## 🧪 Credenziali per il Test delle Funzionalità
+
+Per valutare le differenze di comportamento dell'interfaccia utente (UI Hiding e restrizioni sui permessi), sono disponibili due account preconfigurati nel sistema:
+
+* **Account Amministratore (Pieni privilegi di scrittura/lettura):**
+    * **Email:** `admin@test.com`
+    * **Password:** `test123`
+
+* **Account Sviluppatore (Privilegi limitati in sola lettura):**
+    * **Email:** `luca.dev@test.com`
+    * **Password:** `test123`
+
+---
+
 ## 📖 Documentazione Microservizi
 Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di ogni singolo modulo, consulta i README specifici:
 

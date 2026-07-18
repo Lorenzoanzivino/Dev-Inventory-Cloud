@@ -6,8 +6,8 @@ Content-Type: application/json
 
 {
   "nome": "Lorenzo Admin",
-  "email": "admin@example.com",
-  "password": "test-password-123"
+  "email": "admin@test.com",
+  "password": "test123"
 }
 
 ### >>> FERMATI QUI: Esegui il Passaggio 2 nel terminale per promuovere a ADMIN prima di procedere <<<
@@ -17,8 +17,8 @@ POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@example.com",
-  "password": "test-password-123"
+  "email": "admin@test.com",
+  "password": "test123"
 }
 
 ### 3. [ADMIN] Crea un Progetto (ID previsto: 1)
@@ -61,8 +61,8 @@ Content-Type: application/json
 
 {
   "nome": "Luca Developer",
-  "email": "luca.dev@example.com",
-  "password": "test-password-123"
+  "email": "luca.dev@test.com",
+  "password": "test123"
 }
 
 ### 7. Login di Luca (Prendi il JWT e salvalo come variabile TOKEN_LUCA nel tuo IDE)
@@ -70,8 +70,8 @@ POST http://localhost/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "luca.dev@example.com",
-  "password": "test-password-123"
+  "email": "luca.dev@test.com",
+  "password": "test123"
 }
 
 ### 8. [TEST SICUREZZA 403] Luca prova a creare un Progetto
