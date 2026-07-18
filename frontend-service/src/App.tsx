@@ -29,6 +29,7 @@ import { ProfilePage } from "./pages/Profile";
 import { CustomSider } from "./components/CustomSider";
 import { Header } from "./components/header";
 
+import { ProjectList, ProjectCreate, ProjectEdit } from "./pages/projects";
 import { ResourceList, ResourceCreate, ResourceEdit } from "./pages/resources";
 import { CategoryList, CategoryCreate, CategoryEdit } from "./pages/categories";
 import { DeveloperList, DeveloperCreate, DeveloperEdit } from "./pages/developers";
@@ -82,6 +83,13 @@ const AppThemed = () => {
                     routerProvider={routerBindings}
                     resources={[
                         {
+                            name: "projects",
+                            list: "/projects",
+                            create: "/projects/create",
+                            edit: "/projects/edit/:id",
+                            meta: { canDelete: true, label: "Progetti" },
+                        },
+                        {
                             name: "resources",
                             list: "/resources",
                             create: "/resources/create",
@@ -129,7 +137,7 @@ const AppThemed = () => {
                                 >
                                     <ThemedLayoutV2
                                         Header={Header}
-                                        Sider={ThemedSiderV2} // Sostituisci CustomSider con ThemedSiderV2 temporaneamente
+                                        Sider={ThemedSiderV2}
                                     >
                                         <Outlet />
                                     </ThemedLayoutV2>
@@ -137,6 +145,11 @@ const AppThemed = () => {
                             }
                         >
                             <Route index element={<NavigateToResource resource="resources" />} />
+                            <Route path="/projects/*">
+                                <Route index element={<ProjectList />} />
+                                <Route path="create" element={<ProjectCreate />} />
+                                <Route path="edit/:id" element={<ProjectEdit />} />
+                            </Route>
                             <Route path="/resources/*">
                                 <Route index element={<ResourceList />} />
                                 <Route path="create" element={<ResourceCreate />} />
