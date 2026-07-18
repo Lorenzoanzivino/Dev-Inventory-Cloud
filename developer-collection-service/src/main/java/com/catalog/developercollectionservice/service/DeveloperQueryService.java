@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class DeveloperQueryService {
     public List<DeveloperResponse> getAllDevelopers() {
         return developerRepository.findAll().stream()
                 .map(developerMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public DeveloperResponse getDeveloperById(Long id) {

@@ -4,42 +4,37 @@ server:
 spring:
   application:
     name: api-gateway
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:default}
   cloud:
     gateway:
       routes:
-        # --- RESOURCE SERVICE ---
         - id: resource-catalog-api
-          uri: ${RESOURCE_CATALOG_SERVICE_URL}
+          uri: ${RESOURCE_CATALOG_SERVICE_URL:http://resource-catalog-service:8083}
           predicates:
-            - Path=/api/v1/resources/**, /api/v1/categories/**
+            - Path=/api/v1/resources/**, /api/v1/categories/**, /api/v1/projects/**
           filters:
             - AuthenticationFilter
-
         - id: resource-catalog-docs
-          uri: ${RESOURCE_CATALOG_SERVICE_URL}
+          uri: ${RESOURCE_CATALOG_SERVICE_URL:http://resource-catalog-service:8083}
           predicates:
             - Path=/v3/api-docs/resources/**
           filters:
             - RewritePath=/v3/api-docs/resources(?<segment>.*), /v3/api-docs$\{segment}
-
-        # --- DEVELOPER SERVICE ---
         - id: developer-collection-api
-          uri: ${DEVELOPER_COLLECTION_SERVICE_URL}
+          uri: ${DEVELOPER_COLLECTION_SERVICE_URL:http://developer-collection-service:8081}
           predicates:
-            - Path=/api/v1/developers/**
+            - Path=/api/v1/developers/**, /api/v1/collections/**, /api/v1/assignments/**
           filters:
             - AuthenticationFilter
-
         - id: developer-collection-docs
-          uri: ${DEVELOPER_COLLECTION_SERVICE_URL}
+          uri: ${DEVELOPER_COLLECTION_SERVICE_URL:http://developer-collection-service:8081}
           predicates:
             - Path=/v3/api-docs/developers/**
           filters:
             - RewritePath=/v3/api-docs/developers(?<segment>.*), /v3/api-docs$\{segment}
-
-        # --- AUTH SERVICE ---
         - id: auth-service
-          uri: ${AUTH_SERVICE_URL}
+          uri: ${AUTH_SERVICE_URL:http://auth-service:8082}
           predicates:
             - Path=/api/v1/auth/**, /v3/api-docs/auth/**
           filters:

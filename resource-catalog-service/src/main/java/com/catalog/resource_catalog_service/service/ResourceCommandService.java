@@ -19,14 +19,37 @@ public class ResourceCommandService {
 
     public Long createResource(ResourceRequest request) {
         Category category = categoryRepository.findById(request.categoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + request.categoryId()));
+                .orElseThrow(() -> new RuntimeException("Categoria non trovata con ID: " + request.categoryId()));
 
-        Resource resource = new Resource();
+        Resource resource = Resource.builder()
+                .nome(request.nome())
+                .descrizione(request.descrizione())
+                .url(request.url()) // Può essere null, il DB lo accetta (nullable = true)
+                .category(category)
+                .build();
+
+        return resourceRepository.save(resource).getId();
+    }
+
+    public void updateResource(Long id, ResourceRequest request) {
+        Resource resource = resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Risorsa non trovata"));
+
+        Category category = categoryRepository.findById(request.categoryId())
+                .orElseThrow(() -> new RuntimeException("Categoria non trovata"));
+
         resource.setNome(request.nome());
         resource.setDescrizione(request.descrizione());
         resource.setUrl(request.url());
         resource.setCategory(category);
 
-        return resourceRepository.save(resource).getId();
+        resourceRepository.save(resource);
+    }
+
+    public void deleteResource(Long id) {
+        if (!resourceRepository.existsById(id)) {
+            throw new IllegalStateException("Risorsa non trovata");
+        }
+        resourceRepository.deleteById(id);
     }
 }

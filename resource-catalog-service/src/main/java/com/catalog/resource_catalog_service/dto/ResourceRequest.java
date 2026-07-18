@@ -6,12 +6,9 @@ import jakarta.validation.constraints.NotNull;
 public record ResourceRequest(
         @NotBlank(message = "Il nome è obbligatorio")
         String nome,
-
         String descrizione,
-
-        @NotBlank(message = "L'URL è obbligatorio")
-        String url,
-
+        String url, // Rimosso @NotBlank: ora è opzionale
         @NotNull(message = "L'ID della categoria è obbligatorio")
-        Long categoryId // Riceviamo l'ID della categoria esistente
-) {}
+        Long categoryId
+) {
+}

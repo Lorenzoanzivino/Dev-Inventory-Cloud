@@ -1,141 +1,156 @@
 # ☁️ Dev-Inventory-Cloud
 
-**RESTful API a Microservizi per la gestione di risorse, tool e documentazione per sviluppatori.**
-
-Questo progetto rappresenta l'evoluzione cloud-native del catalogo [Dev-Inventory](https://github.com/Lorenzoanzivino/Dev-Inventory-API), rifattorizzato da un'architettura monolitica a un ecosistema basato su microservizi stateless, con focus su scalabilità, qualità del codice e separazione dei domini.
+***"Piattaforma Full-Stack e API a Microservizi per la gestione di risorse, tool e documentazione per team di sviluppo"***
 
 ---
 
-## 📑 Sommario
-- [Architettura del Sistema](#-architettura-del-sistema)
-- [Tech Stack & Tools](#-tech-stack--tools)
-- [Design Pattern e Scelte Tecniche](#-design-pattern-e-scelte-tecniche)
-- [Strategia di Testing](#-strategia-di-testing)
-- [Workflow Git](#-workflow-git)
-- [Setup & Esecuzione](#-setup--esecuzione)
-- [API Endpoints](#-api-endpoints)
+## 🎯 Panoramica del Progetto
+
+### Cos'è?
+Dev-Inventory-Cloud è una piattaforma cloud-native basata su un'architettura a microservizi (Spring Boot). È progettata per garantire l'isolamento dei dati, sicurezza avanzata e alta manutenibilità attraverso il pattern Database-per-Service.
+
+### Cosa fa?
+Il sistema centralizza e indicizza le risorse software (librerie, tool, link a documentazioni) categorizzandole in base a specifici progetti. Gestisce l'autenticazione degli utenti, i profili degli sviluppatori, e orchestra le comunicazioni sicure tra i vari moduli del sistema tramite un API Gateway.
+
+### A cosa serve?
+Permette ai Tech Lead (ADMIN) di orchestrare gli strumenti di lavoro e assegnare i developer ai vari progetti. Aiuta gli sviluppatori ad avere una dashboard organizzata contenente solo le categorie e le risorse necessarie ai progetti a cui lavorano, accelerando l'onboarding.
 
 ---
 
 ## 🏗️ Architettura del Sistema
-Il sistema è basato su un'architettura a microservizi distribuita, orchestrata tramite Docker.
+L'ecosistema è composto da un API Gateway e tre microservizi di backend indipendenti, ognuno con il proprio database PostgreSQL isolato.
 
-1.  **API Gateway (Spring Cloud Gateway)** - Porta: `80`
-   - Punto d'accesso unico per i client con routing dinamico.
-   - Implementa filtri di sicurezza per la validazione dei token JWT.
-2.  **Auth Service** - Porta interna: `8082`
-   - Gestisce registrazione, login e generazione di JWT (HMAC SHA-256).
-   - Database: **PostgreSQL**.
-3.  **Resource Catalog Service** - Porta interna: `8080`
-   - Gestisce il dominio delle risorse e delle categorie (1:N).
-   - Implementa pattern CQRS per l'ottimizzazione delle performance.
-   - Database: **PostgreSQL**.
-4.  **Developer Collection Service** - Porta interna: `8081`
-   - Gestisce i profili degli sviluppatori e le loro collezioni salvate.
-   - Comunica con il Catalog Service tramite **OpenFeign**.
-   - Database: **PostgreSQL**.
+1.  **API Gateway (Spring Cloud Gateway)** - Porta: `8080` (esposta come `80`)
+    *   Punto d'accesso unico con routing dinamico.
+    *   Implementa filtri di sicurezza per la validazione dei token JWT.
+2.  **Auth Service** - Porta: `8082`
+    *   Gestisce registrazione, login e validazione credenziali.
+    *   Genera token JWT (HMAC SHA-256) per l'accesso sicuro.
+    *   Database: **PostgreSQL (`auth_db`)**.
+3.  **Developer Collection Service** - Porta: `8081`
+    *   Gestisce i profili degli sviluppatori e le collezioni/assegnazioni ai progetti.
+    *   Database: **PostgreSQL (`developer_collection_db`)**.
+4.  **Resource Catalog Service** - Porta: `8083`
+    *   Gestisce il dominio delle risorse, delle categorie e dei progetti.
+    *   Database: **PostgreSQL (`resource_catalog_db`)**.
 
 ---
 
 ## 🛠️ Tech Stack & Tools
 
 **Backend Core**
-- **Java 17** & **Spring Boot 3.2.x**
+- **Java 17** & **Spring Boot 3.2.5**
 - **Spring Cloud Gateway** (API Management)
 - **Spring Security** (Authentication & JWT)
-- **Spring Data JPA** & **Hibernate** (Persistenza)
-- **MapStruct** (Mapping DTO-Entity)
-- **Lombok** (Boilerplate reduction)
-- **OpenFeign** (Comunicazione Inter-service)
-
-**Testing Frameworks**
-- **JUnit 5** & **Mockito** (Unit Testing)
-- **H2 Database** (In-memory testing)
-- **MockMvc** (Web Layer testing)
+- **Spring Data JPA** & **Hibernate** (Code-First)
+- **OpenFeign** (Comunicazione Inter-service sincrona)
 
 **DevOps & Infrastruttura**
 - **Docker** & **Docker Compose** (Containerizzazione)
-- **PostgreSQL 17** (DBMS)
-- **Maven** (Build Tool)
+- **PostgreSQL 17** (DBMS relazionale)
+- **GitHub Actions** (CI/CD Pipeline)
+
+---
+
+## ✨ Funzionalità Principali
+
+### 1. Multi-Tenancy (Isolamento per Progetto) con Persistenza
+Il sistema supporta la gestione compartimentata dei dati. Risorse e categorie non sono globali ma afferiscono a specifici **Progetti**.
+*   **Filtri Dinamici:** La UI filtra automaticamente liste e menu a tendina (es. creazione risorsa) in base al progetto attivo.
+*   **State Persistence:** Il frontend memorizza il progetto selezionato nel `localStorage`, garantendo che l'utente non perda il contesto di lavoro ricaricando la pagina.
+
+### 2. Sicurezza RBAC Avanzata e UI Reattiva
+L'ecosistema supporta due ruoli principali:
+*   **ADMIN**: Ha visibilità totale. Può creare/modificare/eliminare progetti, categorie, risorse e assegnare gli sviluppatori.
+*   **DEVELOPER**: Ha visibilità limitata ai soli progetti assegnati.
+*   **UI Hiding:** Il frontend intercetta il ruolo dal JWT e nasconde dinamicamente i pulsanti "Create", "Edit" e "Delete" per gli utenti non autorizzati, offrendo un'esperienza *read-only* sicura e pulita, validata a monte dai filtri del Gateway API.
+
+### 3. Sincronizzazione Cross-Service
+La creazione o l'aggiornamento di un utente scatena chiamate sicure (via Feign Client) per mantenere allineati i database del servizio di Autenticazione e quello del Developer Collection Service, garantendo l'integrità referenziale distribuita.
 
 ---
 
 ## 🧩 Design Pattern e Scelte Tecniche
 
-### CQRS (Command Query Responsibility Segregation)
-- Separazione netta tra i modelli di scrittura (**CommandService**) e i modelli di lettura (**QueryService**).
-- Maggiore manutenibilità e scalabilità orizzontale dei carichi di lavoro.
-
-### Robustezza e Manutenibilità
-- **Java Records:** Utilizzo di DTO immutabili per il trasferimento dati.
-- **Global Exception Handling:** Gestione centralizzata tramite `@RestControllerAdvice` con risposte standardizzate in formato JSON.
-- **Logging Strutturato:** Configurazione Logback per output in formato JSON, ottimizzato per sistemi di aggregazione log in cloud.
+- **Database-per-Service:** Ogni microservizio ha un proprio container PostgreSQL isolato, garantendo il disaccoppiamento totale dei dati.
+- **Code-First (Hibernate):** Utilizzo della proprietà `ddl-auto=update` per generare lo schema del database direttamente dalle `@Entity` Java.
+- **CQRS Logico:** Separazione tra Command Service (scrittura) e Query Service (lettura) all'interno dei microservizi.
+- **Stateless Services:** Nessuna sessione in memoria. La sicurezza e l'identità sono interamente gestite tramite token JWT passati dall'API Gateway.
+- **Data Transfer Objects (DTO):** Utilizzati ai confini dell'applicazione per disaccoppiare la logica interna dalle API esposte al client.
 
 ---
 
-## 🧪 Strategia di Testing
-
-Il sistema adotta una piramide del test rigorosa:
-
--   **Unit Tests:** Verifica della logica di business nei Service utilizzando Mockito per l'isolamento completo.
--   **Repository Tests:** Integration test dello strato di persistenza con database H2 in-memory per validare query JPA e vincoli di database.
--   **Web Layer Tests:** Verifica dei controller tramite MockMvc per validare endpoint, mapping JSON e `@Valid` constraints.
-
----
-
-## 🔄 Workflow Git
-Viene seguito un protocollo rigoroso per garantire la stabilità del ramo principale:
-1. Creazione repository GitHub.
-2. Clone locale e creazione branch `develop`.
-3. Sviluppo in feature branch: `feature/nome-task`.
-4. Commit atomici e Push.
-5. Pull Request verso `develop`.
-6. Merge e cancellazione branch temporaneo.
-   *Note: I commit diretti su `main` e `develop` sono proibiti.*
+## 🔄 Workflow Git (MANDATORY SEQUENCE)
+Viene seguito un protocollo rigoroso per lo sviluppo:
+1. Creazione Feature Branch per ogni task (`feature/nome-task`).
+2. Sviluppo e commit atomici.
+3. Push sul remote branch.
+4. Creazione Pull Request verso `develop`.
+5. Verifica superamento pipeline (GitHub Actions).
+6. Merge ed eliminazione del branch.
+   **Vietati i commit diretti su `main` o `develop`.**
 
 ---
 
 ## 🚀 Setup & Esecuzione
 
-Prerequisiti: Docker e Docker Compose installati.
+Prerequisiti: **Docker** e **Docker Compose**.
 
-1.  **Clonare la repository:**
-    ```bash
-    git clone [https://github.com/Lorenzoanzivino/Dev-Inventory-Cloud.git](https://github.com/Lorenzoanzivino/Dev-Inventory-Cloud.git)
-    cd Dev-Inventory-Cloud
-    ```
-2.  **Avviare l'ecosistema:**
-    ```bash
-    docker compose up --build
-    ```
-3.  **Accesso API:**
-   - Gateway: `http://localhost`
-   - Swagger UI: `http://localhost/swagger-ui/index.html` (Aggregato per tutti i servizi)
+### 1. File di Configurazione (`.env`)
+Il progetto utilizza variabili d'ambiente per proteggere le credenziali. Prima di avviare l'ecosistema, crea un file `.env` nella directory root del progetto con il seguente contenuto:
 
----
+```env
+DB_USERNAME=admin
+DB_PASSWORD=secretpassword
+SPRING_JPA_HIBERNATE_DDL_AUTO=update
+SPRING_JPA_SHOW_SQL=true
+JWT_SECRET=super_secret_key_for_jwt_generation_must_be_long
+JWT_EXPIRATION=3600000
+API_GATEWAY_URL=http://api-gateway:8080
+```
 
-## 📑 API Endpoints
+### 2. Avvio dell'Ecosistema
+Esegui i seguenti comandi dalla root del progetto:
 
-### Auth Service
-| Metodo | Endpoint | Descrizione |
-| :--- | :--- | :--- |
-| POST | /api/v1/auth/register | Registrazione nuovo utente |
-| POST | /api/v1/auth/login | Autenticazione e rilascio JWT |
+```bash
+docker compose up -d --build
+```
 
-### Catalog Service
-| Metodo | Endpoint | Descrizione |
-| :--- | :--- | :--- |
-| GET | /api/v1/categories | Recupera tutte le categorie |
-| POST | /api/v1/categories | Crea una nuova categoria |
-| GET | /api/v1/resources | Recupera tutte le risorse |
-| POST | /api/v1/resources | Crea una risorsa (richiede CategoryId) |
+Questo comando scaricherà le immagini PostgreSQL, compilerà i microservizi e avvierà l'intera infrastruttura.
 
-### Developer Service
-| Metodo | Endpoint | Descrizione |
-| :--- | :--- | :--- |
-| GET | /api/v1/developers | Lista sviluppatori registrati |
-| GET | /api/v1/developers/{id} | Dettaglio singolo sviluppatore |
+
+### 3. Popolamento Dati Iniziali (Seeding) e Accesso UI
+Per creare automaticamente gli utenti di test nel database e assegnare i ruoli corretti, attendi circa 15 secondi l'avvio completo dei servizi e lancia lo script dedicato:
+
+```bash
+chmod +x seed.sh
+./seed.sh
+```
+Una volta terminato il seeding, l'interfaccia utente sarà accessibile dal browser all'indirizzo: http://localhost:3000
 
 ---
 
-**Ultimo aggiornamento:** Aprile 2026
+## 🧪 Credenziali per il Test delle Funzionalità
+
+Per valutare le differenze di comportamento dell'interfaccia utente (UI Hiding e restrizioni sui permessi), sono disponibili due account preconfigurati nel sistema:
+
+* **Account Amministratore (Pieni privilegi di scrittura/lettura):**
+    * **Email:** `admin@test.com`
+    * **Password:** `test123`
+
+* **Account Sviluppatore (Privilegi limitati in sola lettura):**
+    * **Email:** `developer@test.com`
+    * **Password:** `test123`
+
+---
+
+## 📖 Documentazione Microservizi
+Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di ogni singolo modulo, consulta i README specifici:
+
+- [API Gateway](./api-gateway/)
+
+- [Auth Service](./auth-service/)
+
+- [Developer Collection Service](./developer-collection-service/)
+
+- [Resource Catalog Service](./resource-catalog-service/)

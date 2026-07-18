@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +20,18 @@ public class CategoryQueryService {
     public List<CategoryResponse> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public CategoryResponse getCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .map(categoryMapper::toResponse)
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + id));
+    }
+
+    public List<CategoryResponse> getCategoriesByProject(Long projectId) {
+        return categoryRepository.findByProjectId(projectId).stream()
+                .map(categoryMapper::toResponse)
+                .toList();
     }
 }

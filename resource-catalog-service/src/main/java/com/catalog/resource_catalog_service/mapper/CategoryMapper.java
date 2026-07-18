@@ -11,6 +11,8 @@ import org.mapstruct.MappingConstants;
 public interface CategoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "resources", ignore = true)
+    @Mapping(target = "project", ignore = true)
+        // Ignora il warning: lo gestisce il Service
     Category toEntity(CategoryRequest request);
 
     CategoryResponse toResponse(Category entity);

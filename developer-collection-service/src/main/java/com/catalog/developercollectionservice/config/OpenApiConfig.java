@@ -11,16 +11,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
+    // Definizione della costante per risolvere l'avviso di SonarQube
+    private static final String SECURITY_SCHEME_NAME = "bearerAuth";
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .addServersItem(new Server()
                         .url("http://localhost")
                         .description("API Gateway"))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
+                // Utilizzo della costante
+                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()
-                        .addSecuritySchemes("bearerAuth", new SecurityScheme()
-                                .name("bearerAuth")
+                        // Utilizzo della costante
+                        .addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme()
+                                // Utilizzo della costante
+                                .name(SECURITY_SCHEME_NAME)
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));

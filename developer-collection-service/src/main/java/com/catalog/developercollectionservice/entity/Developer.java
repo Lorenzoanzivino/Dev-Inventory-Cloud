@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -26,4 +28,7 @@ public class Developer {
     @NotBlank(message = "L'email è obbligatoria")
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany(mappedBy = "developer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProjectAssignment> projectAssignments;
 }

@@ -9,7 +9,7 @@ import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface DeveloperMapper {
-
+    @Mapping(target = "projectAssignments", ignore = true)
     @Mapping(target = "id", ignore = true)
     Developer toEntity(DeveloperRequest request);
 

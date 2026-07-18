@@ -6,4 +6,5 @@ public record DeveloperCollectionResponse(
         Long developerId,
         String developerNome,
         List<CollectionItemResponse> items
-) {}
+) {
+}
