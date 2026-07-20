@@ -10,4 +10,5 @@
 
 # OS generated files
 .DS_Store
-Thumbs.db
+Thumbs.db.env
+frontend-service/.env
