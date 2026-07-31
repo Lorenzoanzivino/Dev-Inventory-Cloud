@@ -154,3 +154,16 @@ Per i dettagli su configurazioni locali, comandi di avvio isolato e test HTTP di
 - [Developer Collection Service](./developer-collection-service/)
 
 - [Resource Catalog Service](./resource-catalog-service/)
+
+---
+
+## 📄 Licenza
+
+Copyright © 2026 Lorenzo Anzivino
+
+All rights reserved.
+
+Il codice è disponibile pubblicamente solo a scopo
+di consultazione. Non è consentito modificare,
+ridistribuire o utilizzare commercialmente il software
+senza autorizzazione.
